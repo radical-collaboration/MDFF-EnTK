@@ -28,7 +28,7 @@ variables:
 
 ```
 export RMQ_HOSTNAME='two.radical-project.org'
-export RMQ_PORT=33211
+export RMQ_PORT=33239
 ```
 
 If you want to create your own, please see [EnTK docs](https://radicalentk.readthedocs.io/en/latest/install.html#installing-rabbitmq).
@@ -58,26 +58,40 @@ Some instructions to install Globus toolkit for Ubuntu 16 can
 be found [here](https://github.com/vivek-bala/docs/blob/master/misc/gsissh_setup_stampede_ubuntu_xenial.sh).
 
 
-## Instruction for installing OpenMM on Bridges
-
-- `module load anaconda3`
-- `conda env create -f environment.yml`
-
-
 ## Executing your script
+
+We have tested the example script on SuperMIC currently. You don't have to
+install anything on SuperMIC, as we have already created a conda env with
+OpenMM that is automatically used by the script.
 
 You will be executing the EnTK script on your laptop/VM. EnTK
 and underlying systems will launch your tasks on the compute
-nodes of Bridges automatically. On your laptop/VM, you can
+nodes of the HPC automatically. On your laptop/VM, you can
 start execution using:
 
 ```
-python example.py
+python example.py --resource xsede_supermic
 ```
 
 The default verbosity should give you updates about each stage of the
 pipeline. If you want to increase the verbosity, you can specify
 ```RADICAL_ENTK_VERBOSE``` to ```INFO```.
+
+
+If required, we also have a configuration for the Bridges machine on XSEDE. But
+this is untested currently (due to high queue wait times).
+
+## Looking at output
+
+If successfully run, a folder of the format 
+```dur-(sim_duration)-ensemble-(ensemble_size)-iters-(total_iterations)``` is
+created on your laptop in the current directory. You can view the contents of
+this folder to check the output.
+
+## Instruction for installing OpenMM on Bridges
+
+- `module load anaconda3`
+- `conda env create -f environment.yml`
 
 ## Issue reporting
 

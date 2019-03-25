@@ -1,0 +1,33 @@
+global:
+  ensemble_size: 10
+  sim_duration: 1
+  total_iters: 2
+
+xsede_bridges:
+  simulation:
+    pre_exec:
+      - 'module load anaconda3'
+      - 'source activate openmm'
+      - 'export OPENMM_CPU_THREADS=28'
+    cpus: 28
+  
+  analysis:
+    pre_exec:
+      - 'module load anaconda3'
+      - 'source activate openmm'
+    cpus: 1
+
+
+xsede_supermic:
+  simulation:
+    pre_exec:
+      - 'export PATH=/home/vivek91/miniconda2/bin:$PATH'
+      - 'source activate openmm_env'
+      - 'export OPENMM_CPU_THREADS=20'
+    cpus: 20
+  
+  analysis:
+    pre_exec:
+      - 'export PATH=/home/vivek91/miniconda2/bin:$PATH'
+      - 'source activate openmm_env'
+    cpus: 1
