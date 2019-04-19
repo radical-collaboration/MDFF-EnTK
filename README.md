@@ -2,7 +2,7 @@
 
 ## Installation and environment setup on VM
 
-* ssh into two.radical-project.org with the given credentials. We suggesting using [tmux](https://github.com/tmux/tmux) for attach/detach screens across ssh connections.
+* ssh into `two.radical-project.org` with the given credentials. We suggesting using [tmux](https://github.com/tmux/tmux) for attach/detach screens across ssh connections.
 
 * Virtualenv creation
 
