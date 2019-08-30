@@ -1,0 +1,14 @@
+global:
+  ensemble_size: 1
+  sim_duration: 1
+  total_iters: 1
+
+xsede_bridges:
+  simulation:
+    pre_exec:
+      - 'module load namd'
+    cpus: 28
+  
+  analysis:
+    pre_exec:
+    cpus: 1
