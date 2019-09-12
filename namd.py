@@ -43,7 +43,7 @@ def get_pipeline(workflow_cfg, resource):
     sim_stage = Stage()
     # We use names of pipelines, stages, tasks to refer to data of a
     # particular task
-    sim_stage.name = 'sim-stage-%s'%it
+    sim_stage.name = 'sim-stage'
 
     sim_task_names = []
 
