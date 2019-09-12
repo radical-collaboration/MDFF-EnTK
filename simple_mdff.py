@@ -203,7 +203,7 @@ def get_pipeline(workflow_cfg, resource):
     task.cpu_reqs['threads_per_process'] = sim_cpus
     task_tcl_cmds = [ 
             'package require mdff',
-            'mdff check -ccc -map 4ake-target_autopsf.situs -res 5',
+            'mdff check -ccc -map 4ake-target_autopsf.dx -res 5',
             'set selallref [atomselect 0 "all"]',
             'set selall [atomselect 1 "all"]',
             '$selall frame 0',
