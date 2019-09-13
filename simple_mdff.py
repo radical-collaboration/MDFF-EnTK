@@ -162,6 +162,7 @@ def get_pipeline(workflow_cfg, resource):
     task.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
     seventh_stage.add_tasks(task)
     task = Task()
+    task.cpu_reqs['threads_per_process'] = sim_cpus    
     task.executable = [ 'namd2' ]
     task.arguments = ['+ppn', sim_cpus, 'adk-step2.namd']
     seventh_stage.add_tasks(task)
