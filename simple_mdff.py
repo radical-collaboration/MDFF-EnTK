@@ -166,7 +166,7 @@ def get_pipeline(workflow_cfg, resource):
     task.executable = [ 'namd2' ]
     task.arguments = ['+ppn', sim_cpus, 'adk-step2.namd']
     seventh_stage.add_tasks(task)
-    p.add_stage(seventh_stage)
+    p.add_stages(seventh_stage)
 
     # Visualizing the MDFF trajectory
     #
