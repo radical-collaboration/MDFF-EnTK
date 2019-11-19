@@ -19,7 +19,8 @@ def to_file(list_of_cmd, fname):
 def set_vmd_run(task, list_of_cmd, name=None):
     fname = to_file(list_of_cmd, name or "input.tcl")
     task.executable = [ 'vmd' ]
-    task.arguments = [ '-eofexit', '<', fname ]
+    #task.arguments = [ '-eofexit', '<', fname ]
+    task.arguments = [ '-dispdev text -e', '<', fname ] # to source a tcl script using command line version of vmd 
 
 
 def get_pipeline(workflow_cfg, resource):
