@@ -18,9 +18,10 @@ def to_file(list_of_cmd, fname):
 
 def set_vmd_run(task, list_of_cmd, name=None):
     fname = to_file(list_of_cmd, name or "input.tcl")
+    tcl_script_in_string = "\n".join(list_of_cmd)
+    task.pre_exec += [ "echo '{}' > {}".format(tcl_script_in_string, name or "input.tcl")]
     task.executable = [ 'vmd' ]
     task.arguments = [ '-eofexit', '<', fname ]
-
 
 def get_pipeline(workflow_cfg, resource):
 
@@ -50,6 +51,13 @@ def get_pipeline(workflow_cfg, resource):
 
     task_names = []
 
+
+    task1_output = ['4ake-target_autopsf.situs']
+    task2_output = ['4ake-target_autopsf-grid.dx']
+    task3_output = ['1ake-initial_autopsf-grid.pdb']
+    task4_output = ['1ake-extrabonds.txt', '1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
+
+
     first_stage = Stage()
     # We use names of pipelines, stages, tasks to refer to data of a
     # particular task
@@ -57,21 +65,22 @@ def get_pipeline(workflow_cfg, resource):
 
 
     # Create tasks and add them to stage
-    task = Task()
-    task.name = 'Starting to load the target PDB'
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/4ake-target.pdb" ]
-    task.pre_exec += [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 'mol new 4ake-target.pdb' ]
-    task_tcl_cmds += [ 'package require autopsf' ]
-    task_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
-    task_tcl_cmds += [ 'set sel [atomselect top all]' ]
-    task_tcl_cmds += [ 'package require mdff']
-    task_tcl_cmds += [ 'mdff sim $sel -res 5 -o 4ake-target_autopsf.situs' ]
-    task_tcl_cmds += [ 'mol new 4ake-target_autopsf.situs' ]
+    task1 = Task()
+    task1.name = 'Starting to load the target PDB'
+    task1.cpu_reqs['threads_per_process'] = sim_cpus
+    task1.pre_exec = [ "/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/4ake-target.pdb" ]
+    task1.pre_exec += [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task1_tcl_cmds = [ 'mol new 4ake-target.pdb' ]
+    task1_tcl_cmds += [ 'package require autopsf' ]
+    task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
+    task1_tcl_cmds += [ 'set sel [atomselect top all]' ]
+    task1_tcl_cmds += [ 'package require mdff']
+    task1_tcl_cmds += [ 'mdff sim $sel -res 5 -o {}'.format(task1_output[0]) ]
+    task1_tcl_cmds += [ 'mol new {}'.format(task1_output[0]) ]
 
-    set_vmd_run(task, task_tcl_cmds, "first_stage.tcl")
-    first_stage.add_tasks(task)
+    set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
+    #task.copy_input_data = ["first_stage.tcl"]
+    first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
     p.add_stages(first_stage)
 
@@ -79,61 +88,65 @@ def get_pipeline(workflow_cfg, resource):
     second_stage = Stage()
     second_stage.name = 'Converting the density map to an MDFF potential'
 
-    task = Task()
-    task.name = 'generate dx file'
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 'package require mdff' ]
-    task_tcl_cmds += [ 'mdff griddx -i 4ake-target_autopsf.situs -o 4ake-target_autopsf-grid.dx' ]
+    task2 = Task()
+    task2.name = 'generate dx file'
+    task2.cpu_reqs['threads_per_process'] = sim_cpus
+    task2.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task2_tcl_cmds = [ 'package require mdff' ]
+    task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
+    task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
 
-    set_vmd_run(task, task_tcl_cmds, "second_stage.tcl")
-    second_stage.add_tasks(task)
+
+    set_vmd_run(task2, task2_tcl_cmds, "second_stage.tcl")
+    second_stage.add_tasks(task2)
     p.add_stages(second_stage)
 
 
     third_stage = Stage()
     third_stage.name = 'Preparing the initial structure'
 
-    task = Task()
-    task.name = 'Starting to load the initial structure'
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-initial.pdb' ]
-    task.pre_exec += [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 'mol new 1ake-initial.pdb' ]
-    task_tcl_cmds += [ 'package require autopsf' ]
-    task_tcl_cmds += [ 'autopsf 1ake-initial.pdb' ]
-    task_tcl_cmds += [ 'package require mdff' ]
-    task_tcl_cmds += [ 'mdff gridpdb -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o 1ake-initial_autopsf-grid.pdb' ]
+    task3 = Task()
+    task3.name = 'Starting to load the initial structure'
+    task3.cpu_reqs['threads_per_process'] = sim_cpus
+    task3.pre_exec = [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-initial.pdb' ]
+    task3.pre_exec += [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task3_tcl_cmds = [ 'mol new 1ake-initial.pdb' ]
+    task3_tcl_cmds += [ 'package require autopsf' ]
+    task3_tcl_cmds += [ 'autopsf 1ake-initial.pdb' ]
+    task3_tcl_cmds += [ 'package require mdff' ]
+    task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {}'.format(task3_output[0]) ]
 
-    set_vmd_run(task, task_tcl_cmds, "third_stage.tcl")
-    third_stage.add_tasks(task)
+    set_vmd_run(task3, task3_tcl_cmds, "third_stage.tcl")
+    third_stage.add_tasks(task3)
     p.add_stages(third_stage)
 
 
     fourth_stage = Stage()
     fourth_stage.name = 'Defining secondary structure restraints'
 
-    task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 'package require ssrestraints' ]
-    task_tcl_cmds += [ 'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o 1ake-extrabonds.txt -hbonds' ]
-    task_tcl_cmds += [ 
+    task4 = Task()
+    task4.cpu_reqs['threads_per_process'] = sim_cpus
+    task4.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task4_tcl_cmds = [ 'package require ssrestraints' ]
+    task4_tcl_cmds += [ 'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
+    task4_tcl_cmds += [ 
             'mol new 1ake-initial_autopsf.psf',
             'mol addfile 1ake-initial_autopsf.pdb',
-            'cispeptide restrain -o 1ake-extrabonds-cispeptide.txt',
-            'chirality restrain -o 1ake-extrabonds-chirality.txt',
+            'cispeptide restrain -o {}'.format(task4_output[1]),
+            'chirality restrain -o {}'.format(task4_output[2]),
             ]
+    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.psf')]
 
-    set_vmd_run(task, task_tcl_cmds, "fourth_stage.tcl")
-    fourth_stage.add_tasks(task)
+    set_vmd_run(task4, task4_tcl_cmds, "fourth_stage.tcl")
+    fourth_stage.add_tasks(task4)
     p.add_stages(fourth_stage)
 
   
     #fifth_stage = Stage()
     #fifth_stage.name = 'Rigid-body docking the structure into the density map'
     #task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
+    #task.cpu_reqs['threads_per_process'] = sim_cpus
     # Expect to run Situs package
     # colores 4ake-target_autopsf.situs 1ake-initial_autopsf.pdb -res 5 -nopowell
     # However, this example uses prepared pdb files by wget
@@ -147,32 +160,54 @@ def get_pipeline(workflow_cfg, resource):
   
     sixth_stage = Stage()
     sixth_stage.name = 'Running the MDFF simulation with NAMD'
-    task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 'package require mdff' ]
-    task_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf-docked.pdb -griddx 4ake-target_autopsf-grid.dx -gridpdb 1ake-initial_autopsf-grid.pdb -extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} -gscale 0.3 -numsteps 50000' ]
-    task_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf-docked.pdb -griddx 4ake-target_autopsf-grid.dx -gridpdb 1ake-initial_autopsf-grid.pdb -extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} -gscale 10 -minsteps 2000 -numsteps 0 -step 2' ]
+    task6 = Task()
+    task6.cpu_reqs['threads_per_process'] = sim_cpus
+    task6.pre_exec = [ "module load vmd/1.9.2" ]       # repeat this for all other stages 
+    task6.pre_exec += [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-colores.pdb' ]
+    task6.pre_exec += [ 'mv 1ake-colores.pdb 1ake-initial_autopsf-docked.pdb' ] 
+    task6_tcl_cmds = [ 'package require mdff' ]
+    task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf ' \
+            + '-pdb 1ake-initial_autopsf-docked.pdb ' \
+            + '-griddx 4ake-target_autopsf-grid.dx ' \
+            + '-gridpdb 1ake-initial_autopsf-grid.pdb ' \
+            + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
+            + '-gscale 0.3 -numsteps 50000' ]
+    task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf ' \
+            + '-pdb 1ake-initial_autopsf-docked.pdb ' \
+            + '-griddx 4ake-target_autopsf-grid.dx ' \
+            + '-gridpdb 1ake-initial_autopsf-grid.pdb ' \
+            + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
+            + '-gscale 10 -minsteps 2000 -numsteps 0 -step 2' ]
+    task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, second_stage.uid, task2.uid, '4ake-target_autopsf-grid.dx'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.psf'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf-grid.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[0]),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[1]),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[2])]
 
-    set_vmd_run(task, task_tcl_cmds, "sixth_stage.tcl")
-    sixth_stage.add_tasks(task)
+
+    set_vmd_run(task6, task6_tcl_cmds, "sixth_stage.tcl")
+    sixth_stage.add_tasks(task6)
     p.add_stages(sixth_stage)
 
 
     seventh_stage = Stage()
     seventh_stage.name = "NAMD simulation"
-    task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.executable = [ 'namd2' ]
-    task.pre_exec = [ "module load namd/2.12_cpu" ]
-    task.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
-    seventh_stage.add_tasks(task)
-    #task = Task()
-    #task.cpu_reqs['threads_per_process'] = sim_cpus    
-    #task.executable = [ 'namd2' ]
-    #task.executable = [ 'namd2' ]
-    #task.arguments = ['+ppn', sim_cpus, 'adk-step2.namd']
-    #seventh_stage.add_tasks(task)
+    task7 = Task()
+    task7.cpu_reqs['threads_per_process'] = sim_cpus
+    task7.executable = [ 'namd2' ]
+    task7.pre_exec = [ "module load namd/2.12_cpu" ]
+    task7.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
+    task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid, task6.uid, 'adk-step1.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid, task6.uid, 'adk-step2.namd')]
+    seventh_stage.add_tasks(task7)
+    #task7_2 = Task()
+    #task7_2.cpu_reqs['threads_per_process'] = sim_cpus    
+    #task7_2.executable = [ 'namd2' ]
+    #task7_2.executable = [ 'namd2' ]
+    #task7_2.arguments = ['+ppn', sim_cpus, 'adk-step2.namd']
+    #seventh_stage.add_tasks(task7_2)
     p.add_stages(seventh_stage)
 
     # Visualizing the MDFF trajectory
@@ -187,10 +222,10 @@ def get_pipeline(workflow_cfg, resource):
 
     eighth_stage = Stage()
     eighth_stage.name = 'Calculating the root mean square deviation'
-    task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 
+    task8 = Task()
+    task8.cpu_reqs['threads_per_process'] = sim_cpus
+    task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task8_tcl_cmds = [ 
             'package require mdff',
             'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
             'set selbbref [atomselect 0 "backbone"]',
@@ -201,17 +236,18 @@ def get_pipeline(workflow_cfg, resource):
             'measure rmsd $selbb $selbbref'
             ]
 
-    set_vmd_run(task, task_tcl_cmds, "eighth_stage.tcl")
-    eighth_stage.add_tasks(task)
+    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.pdb')]
+    set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
+    eighth_stage.add_tasks(task8)
     p.add_stages(eighth_stage)
 
 
     ninth_stage = Stage()
     ninth_stage.name = 'Calculating the cross-correlation coefficient'
-    task = Task()
-    task.cpu_reqs['threads_per_process'] = sim_cpus
-    task.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task_tcl_cmds = [ 
+    task9 = Task()
+    task9.cpu_reqs['threads_per_process'] = sim_cpus
+    task9.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task9_tcl_cmds = [ 
             'package require mdff',
             'mdff check -ccc -map 4ake-target_autopsf.dx -res 5',
             'set selallref [atomselect 0 "all"]',
@@ -221,8 +257,10 @@ def get_pipeline(workflow_cfg, resource):
             '$selall frame last',
             'mdff ccc $selall -i 4ake-target_autopsf.situs -res 5']
 
-    set_vmd_run(task, task_tcl_cmds, "ninth_stage.tcl")
-    ninth_stage.add_tasks(task)
+    task9.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.situs')]
+    set_vmd_run(task9, task9_tcl_cmds, "ninth_stage.tcl")
+    ninth_stage.add_tasks(task9)
     p.add_stages(ninth_stage)
 
     return p
