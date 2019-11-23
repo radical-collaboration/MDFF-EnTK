@@ -47,7 +47,7 @@ def get_pipeline(workflow_cfg, resource):
     # Please refer to the API reference for more details about Pipeline, Stage,
     # Task. Link: https://radicalentk.readthedocs.io/en/latest/api/app_create.html
     p = Pipeline()
-    p.name = 'simple_mdff'
+    p.name = 'simple-mdff'
 
     task_names = []
 
@@ -132,11 +132,13 @@ def get_pipeline(workflow_cfg, resource):
     task4_tcl_cmds += [ 
             'mol new 1ake-initial_autopsf.psf',
             'mol addfile 1ake-initial_autopsf.pdb',
+            'package require cispeptide',
+            'package require chirality',
             'cispeptide restrain -o {}'.format(task4_output[1]),
             'chirality restrain -o {}'.format(task4_output[2]),
             ]
-    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.psf')]
+    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
 
     set_vmd_run(task4, task4_tcl_cmds, "fourth_stage.tcl")
     fourth_stage.add_tasks(task4)
@@ -178,13 +180,13 @@ def get_pipeline(workflow_cfg, resource):
             + '-gridpdb 1ake-initial_autopsf-grid.pdb ' \
             + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
             + '-gscale 10 -minsteps 2000 -numsteps 0 -step 2' ]
-    task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, second_stage.uid, task2.uid, '4ake-target_autopsf-grid.dx'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf.psf'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-initial_autopsf-grid.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[0]),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[1]),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid, task4.uid, task4_output[2])]
+    task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf-grid.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[0]),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[1]),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[2])]
 
 
     set_vmd_run(task6, task6_tcl_cmds, "sixth_stage.tcl")
@@ -199,8 +201,19 @@ def get_pipeline(workflow_cfg, resource):
     task7.executable = [ 'namd2' ]
     task7.pre_exec = [ "module load namd/2.12_cpu" ]
     task7.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
-    task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid, task6.uid, 'adk-step1.namd'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid, task6.uid, 'adk-step2.namd')]
+    task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-docked.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-grid.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '4ake-target_autopsf-grid.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-chirality.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-cispeptide.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'mdff_template.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'par_all27_prot_lipid_na.inp')
+        ]
+    task7.download_output_data = ['adk-step1.dcd']
     seventh_stage.add_tasks(task7)
     #task7_2 = Task()
     #task7_2.cpu_reqs['threads_per_process'] = sim_cpus    
@@ -236,7 +249,7 @@ def get_pipeline(workflow_cfg, resource):
             'measure rmsd $selbb $selbbref'
             ]
 
-    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.pdb')]
+    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.pdb')]
     set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
     eighth_stage.add_tasks(task8)
     p.add_stages(eighth_stage)
@@ -249,7 +262,7 @@ def get_pipeline(workflow_cfg, resource):
     task9.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
     task9_tcl_cmds = [ 
             'package require mdff',
-            'mdff check -ccc -map 4ake-target_autopsf.dx -res 5',
+            'mdff check -ccc -map 4ake-target_autopsf.situs -res 5',
             'set selallref [atomselect 0 "all"]',
             'set selall [atomselect 1 "all"]',
             '$selall frame 0',
@@ -257,8 +270,8 @@ def get_pipeline(workflow_cfg, resource):
             '$selall frame last',
             'mdff ccc $selall -i 4ake-target_autopsf.situs -res 5']
 
-    task9.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.dx'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid, task1.uid, '4ake-target_autopsf.situs')]
+    task9.copy_input_data = [ 
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.situs')]
     set_vmd_run(task9, task9_tcl_cmds, "ninth_stage.tcl")
     ninth_stage.add_tasks(task9)
     p.add_stages(ninth_stage)
