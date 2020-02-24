@@ -55,7 +55,8 @@ def get_pipeline(workflow_cfg, resource):
     task1_output = ['4ake-target_autopsf.situs']
     task2_output = ['4ake-target_autopsf-grid.dx']
     task3_output = ['1ake-initial_autopsf-grid.pdb']
-    task4_output = ['1ake-extrabonds.txt', '1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
+    task4_output = ['1ake-extrabonds.txt']
+    task5_output = ['1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
 
 
     first_stage = Stage()
@@ -127,16 +128,12 @@ def get_pipeline(workflow_cfg, resource):
     task4 = Task()
     task4.cpu_reqs['threads_per_process'] = sim_cpus
     task4.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task4_tcl_cmds = [ 'package require ssrestraints' ]
-    task4_tcl_cmds += [ 'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
-    task4_tcl_cmds += [ 
-            'mol new 1ake-initial_autopsf.psf',
-            'mol addfile 1ake-initial_autopsf.pdb',
-            'package require cispeptide',
-            'package require chirality',
-            'cispeptide restrain -o {}'.format(task4_output[1]),
-            'chirality restrain -o {}'.format(task4_output[2]),
-            ]
+    
+    task4_tcl_cmds += [ 'package require ssrestraints',
+                        'mol new 1ake-initial_autopsf.psf',
+                        'mol addfile 1ake-initial_autopsf.pdb',
+                        'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
+    
     task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
 
@@ -144,22 +141,30 @@ def get_pipeline(workflow_cfg, resource):
     fourth_stage.add_tasks(task4)
     p.add_stages(fourth_stage)
 
-  
-    #fifth_stage = Stage()
-    #fifth_stage.name = 'Rigid-body docking the structure into the density map'
-    #task = Task()
-    #task.cpu_reqs['threads_per_process'] = sim_cpus
-    # Expect to run Situs package
-    # colores 4ake-target_autopsf.situs 1ake-initial_autopsf.pdb -res 5 -nopowell
-    # However, this example uses prepared pdb files by wget
-    #task.pre_exec = [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-colores.pdb' ]
-    #task.executable = [ 'mv' ]
-    #task.arguments  = [ '1ake-colores.pdb', '1ake-initial_autopsf-docked.pdb' ]
- 
-    #fifth_stage.add_tasks(task)
-    #p.add_stages(fifth_stage)
+    #### please check this block carefully#####
+    fifth_stage = Stage()
+    fifth_stage.name = 'cispeptide and chirality restraints'
 
-  
+    task5 = Task() 
+    task5.cpu_reqs['threads_per_process'] = sim_cpus
+    task5.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages    
+
+    task5_tcl_cmds += [ 'mol new 1ake-initial_autopsf.psf',
+                        'mol addfile 1ake-initial_autopsf.pdb',
+                        'package require cispeptide',
+                        'package require chirality',
+                        'cispeptide restrain -o {}'.format(task5_output[0]),
+                        'chirality restrain -o {}'.format(task5_output[1]) ]
+    
+    task5.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
+    
+    set_vmd_run(task5, task5_tcl_cmds, "fifth_stage.tcl")
+    fourth_stage.add_tasks(task5)
+    p.add_stages(fifth_stage)
+
+    ########### please check again###########
+
     sixth_stage = Stage()
     sixth_stage.name = 'Running the MDFF simulation with NAMD'
     task6 = Task()
@@ -185,8 +190,8 @@ def get_pipeline(workflow_cfg, resource):
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf'),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf-grid.pdb'),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[0]),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[1]),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[2])]
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, task5_output[0]),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, task5_output[1])]
 
 
     set_vmd_run(task6, task6_tcl_cmds, "sixth_stage.tcl")
