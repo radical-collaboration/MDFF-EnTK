@@ -129,7 +129,7 @@ def get_pipeline(workflow_cfg, resource):
     task4.cpu_reqs['threads_per_process'] = sim_cpus
     task4.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
     
-    task4_tcl_cmds += [ 'package require ssrestraints',
+    task4_tcl_cmds = [ 'package require ssrestraints',
                         'mol new 1ake-initial_autopsf.psf',
                         'mol addfile 1ake-initial_autopsf.pdb',
                         'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
@@ -149,7 +149,7 @@ def get_pipeline(workflow_cfg, resource):
     task5.cpu_reqs['threads_per_process'] = sim_cpus
     task5.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages    
 
-    task5_tcl_cmds += [ 'mol new 1ake-initial_autopsf.psf',
+    task5_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf',
                         'mol addfile 1ake-initial_autopsf.pdb',
                         'package require cispeptide',
                         'package require chirality',
@@ -160,7 +160,7 @@ def get_pipeline(workflow_cfg, resource):
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
     
     set_vmd_run(task5, task5_tcl_cmds, "fifth_stage.tcl")
-    fourth_stage.add_tasks(task5)
+    fifth_stage.add_tasks(task5)
     p.add_stages(fifth_stage)
 
     ########### please check again###########
@@ -207,7 +207,7 @@ def get_pipeline(workflow_cfg, resource):
     task7.pre_exec = [ "module load namd/2.12_cpu" ]
     task7.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
+        #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf.psf'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-docked.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-grid.pdb'),
