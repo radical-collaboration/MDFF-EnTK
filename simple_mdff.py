@@ -218,7 +218,7 @@ def get_pipeline(workflow_cfg, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'mdff_template.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'par_all27_prot_lipid_na.inp')
         ]
-    task7.download_output_data = ['adk-step1.dcd']
+    task7.download_output_data = ['adk-step1.dcd'] # copying to home directory
     seventh_stage.add_tasks(task7)
     #task7_2 = Task()
     #task7_2.cpu_reqs['threads_per_process'] = sim_cpus    
@@ -230,7 +230,7 @@ def get_pipeline(workflow_cfg, resource):
 
     # Visualizing the MDFF trajectory
     #
-    # mol new 4ake-target_autopsf.psf    
+    #mol new 4ake-target_autopsf.psf    
     # mol addfile 4ake-target_autopsf.pdb  
     # mol new 1ake-initial_autopsf.psf   
     # mol addfile 1ake-initial_autopsf-docked.pdb  
@@ -238,26 +238,34 @@ def get_pipeline(workflow_cfg, resource):
     # mol addfile adk-step2.dcd
 
 
-    # eighth_stage = Stage()
-    # eighth_stage.name = 'Calculating the root mean square deviation'
-    # task8 = Task()
-    # task8.cpu_reqs['threads_per_process'] = sim_cpus
-    # task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    # task8_tcl_cmds = [ 
-    #         'package require mdff',
-    #         'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
-    #         'set selbbref [atomselect 0 "backbone"]',
-    #         'set selbb [atomselect 1 "backbone"]',
-    #         '$selbb frame 0',
-    #         'measure rmsd $selbb $selbbref',
-    #         '$selbb frame last',
-    #         'measure rmsd $selbb $selbbref'
-    #         ]
+    eighth_stage = Stage()
+    eighth_stage.name = 'Calculating the root mean square deviation'
+    task8 = Task()
+    task8.cpu_reqs['threads_per_process'] = sim_cpus
+    task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task8_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
+    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ] # DS to check
+    
+    task8_tcl_cmds += ['package require mdff',
+                       'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
+                       'set selbbref [atomselect 0 "backbone"]',
+                       'set selbb [atomselect 1 "backbone"]',
+                       '$selbb frame 0',
+                       'measure rmsd $selbb $selbbref',
+                       '$selbb frame last',
+                       'measure rmsd $selbb $selbbref' ]
 
-    # task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.pdb')]
-    # set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
-    # eighth_stage.add_tasks(task8)
-    # p.add_stages(eighth_stage)
+    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
+        first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
+            task3.name, '1ake-initial_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
+            task7.name, 'adk-step1.dcd')
+        ]
+    
+    set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
+    eighth_stage.add_tasks(task8)
+    p.add_stages(eighth_stage)
 
 
     # ninth_stage = Stage()
