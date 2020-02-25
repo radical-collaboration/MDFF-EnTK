@@ -244,16 +244,10 @@ def get_pipeline(workflow_cfg, resource):
     task8.cpu_reqs['threads_per_process'] = sim_cpus
     task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
     task8_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
-    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ] # DS to check
-    
+    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]  # load the full mdff trajectory
+    task8_tcl_cmds += [ 'mol new 4ake-target_autopsf.pdb' ]        # load the reference pdb
     task8_tcl_cmds += ['package require mdff',
-                       'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
-                       'set selbbref [atomselect 0 "backbone"]',
-                       'set selbb [atomselect 1 "backbone"]',
-                       '$selbb frame 0',
-                       'measure rmsd $selbb $selbbref',
-                       '$selbb frame last',
-                       'measure rmsd $selbb $selbbref' ]
+                       'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb' ]
 
     task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
         first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
@@ -267,27 +261,76 @@ def get_pipeline(workflow_cfg, resource):
     eighth_stage.add_tasks(task8)
     p.add_stages(eighth_stage)
 
+        eighth_stage = Stage()
+    eighth_stage.name = 'Calculating the root mean square deviation'
+    task8 = Task()
+    task8.cpu_reqs['threads_per_process'] = sim_cpus
+    task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task8_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
+    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]  # load the full mdff trajectory
+    task8_tcl_cmds += [ 'mol new 4ake-target_autopsf.pdb' ]        # load the reference pdb
+    task8_tcl_cmds += ['package require mdff',
+                       'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb' ]
 
-    # ninth_stage = Stage()
-    # ninth_stage.name = 'Calculating the cross-correlation coefficient'
-    # task9 = Task()
-    # task9.cpu_reqs['threads_per_process'] = sim_cpus
-    # task9.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    # task9_tcl_cmds = [ 
-    #         'package require mdff',
-    #         'mdff check -ccc -map 4ake-target_autopsf.situs -res 5',
-    #         'set selallref [atomselect 0 "all"]',
-    #         'set selall [atomselect 1 "all"]',
-    #         '$selall frame 0',
-    #         'mdff ccc $selall -i 4ake-target_autopsf.situs -res 5',
-    #         '$selall frame last',
-    #         'mdff ccc $selall -i 4ake-target_autopsf.situs -res 5']
+    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
+        first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
+            task3.name, '1ake-initial_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
+            task7.name, 'adk-step1.dcd')
+        ]
+    
+    set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
+    eighth_stage.add_tasks(task8)
+    p.add_stages(eighth_stage)
 
-    # task9.copy_input_data = [ 
-    #     '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.situs')]
-    # set_vmd_run(task9, task9_tcl_cmds, "ninth_stage.tcl")
-    # ninth_stage.add_tasks(task9)
-    # p.add_stages(ninth_stage)
+    
+    ninth_stage = Stage()
+    ninth_stage.name = 'Calculating the root mean square deviation for backbone atoms'
+    task9 = Task()
+    task9.cpu_reqs['threads_per_process'] = sim_cpus
+    task9.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
+    task9_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
+    task9_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]  # load the full mdff trajectory
+    task9_tcl_cmds += [ 'mol new 4ake-target_autopsf.pdb' ]        # load the reference pdb
+    task9_tcl_cmds += [ 'package require mdff',
+                        'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
+                        'set selbbref [atomselect 0 "backbone"]',
+                        'set selbb [atomselect 1 "backbone"]',
+                        '$selbb frame 0',
+                        'measure rmsd $selbb $selbbref',
+                        '$selbb frame last',
+                        'measure rmsd $selbb $selbbref' ]
+
+    task9.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
+        first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
+            task3.name, '1ake-initial_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
+            task7.name, 'adk-step1.dcd')
+        ]
+    
+    set_vmd_run(task9, task9_tcl_cmds, "ninth_stage.tcl")
+    ninth_stage.add_tasks(task9)
+    p.add_stages(ninth_stage)
+
+    tenth_stage = Stage()
+    tenth_stage.name = 'Calculating the cross-correlation coefficient'
+    task10 = Task()
+    task10.cpu_reqs['threads_per_process'] = sim_cpus
+    task10.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages
+    task10_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
+    task10_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
+    task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
+    task10_tcl_cmds += [ 'package require mdff',
+                         'mdff check -ccc -map 4ake-target_autopsf.situs -res 5' ]
+
+    task10.copy_input_data = [ 
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.situs')]
+
+    set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
+    tenth_stage.add_tasks(task10)
+    p.add_stages(tenth_stage)
 
     return p
 
