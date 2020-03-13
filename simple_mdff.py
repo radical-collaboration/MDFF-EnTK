@@ -294,9 +294,8 @@ def get_pipeline(workflow_cfg, resource):
     task9_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]  # load the full mdff trajectory
     task9_tcl_cmds += [ 'mol new 4ake-target_autopsf.pdb' ]        # load the reference pdb
     task9_tcl_cmds += [ 'package require mdff',
-                        'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb',
-                        'set selbbref [atomselect 0 "backbone"]',
-                        'set selbb [atomselect 1 "backbone"]',
+                        'set selbb [atomselect 0 "backbone"]',
+                        'set selbbref [atomselect 1 "backbone"]',
                         '$selbb frame 0',
                         'measure rmsd $selbb $selbbref',
                         '$selbb frame last',
@@ -321,12 +320,16 @@ def get_pipeline(workflow_cfg, resource):
     task10.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages
     task10_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
     task10_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
-    task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
+    #task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
     task10_tcl_cmds += [ 'package require mdff',
-                         'mdff check -ccc -map 4ake-target_autopsf.situs -res 5' ]
+                         'set selall [atomselect 0 "all"]',
+                         '$selall frame 0',
+                         'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5',
+                         '$selall frame last',
+                         'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5' ]
 
     task10.copy_input_data = [ 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, '4ake-target_autopsf.situs')]
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf.dx')]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
     tenth_stage.add_tasks(task10)
