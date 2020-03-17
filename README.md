@@ -1,4 +1,28 @@
-# Instructions to run EnTK scripts
+
+# Simple MDFF
+
+## Run
+
+### OLCF Summit
+
+```
+ python simple_mdff.py --resource ornl_summit
+```
+
+### PSC Bridges
+
+```
+ python simple_mdff.py --resource xsede_bridges
+```
+
+
+
+
+
+
+
+
+
 
 ## Installation and environment setup on VM
 
