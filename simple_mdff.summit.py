@@ -303,9 +303,9 @@ def get_pipeline(workflow_cfg, resource):
     task10_tcl_cmds += [ 'package require mdff',
                          'set selall [atomselect 0 "all"]',
                          '$selall frame 0',
-                         'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5',
+                         'mdff ccc $selall -i 4ake-target_autopsf-grid.dx -res 5',
                          '$selall frame last',
-                         'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5' ]
+                         'mdff ccc $selall -i 4ake-target_autopsf-grid.dx -res 5' ]
 
     task10.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx')]
