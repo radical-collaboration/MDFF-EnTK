@@ -295,7 +295,7 @@ def get_pipeline(workflow_cfg, resource):
     task10 = Task()
     task10.cpu_reqs['threads_per_process'] = sim_cpus
     task10.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages
-    task10_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
+    task10_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]
     task10_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     #task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
     task10_tcl_cmds += [ 'package require mdff',
@@ -305,7 +305,7 @@ def get_pipeline(workflow_cfg, resource):
                          '$selall frame last',
                          'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5' ]
 
-    task10.copy_input_data = [ 
+    task10.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx')]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")

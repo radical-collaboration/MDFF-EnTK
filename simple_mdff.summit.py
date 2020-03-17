@@ -204,6 +204,7 @@ def get_pipeline(workflow_cfg, resource):
     task7 = Task()
     task7.cpu_reqs['processes'] = int(sim_cpus) // summit_hw_thread_cnt
     task7.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
+    task7.pre_exec = sim_pre_exec
     task7.executable = [ namd_path ]
     task7.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
@@ -268,7 +269,7 @@ def get_pipeline(workflow_cfg, resource):
     task9.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task9.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
     task9_tcl_cmds = [  'mol new 1ake-initial_autopsf.psf',
-            'mol addfile adk-step1.dcd waitefor all',
+            'mol addfile adk-step1.dcd waitfor all',
             'mol new 4ake-target_autopsf.pdb',
             'package require mdff',
             'set selbb [atomselect 0 "backbone"]',
@@ -307,7 +308,7 @@ def get_pipeline(workflow_cfg, resource):
                          'mdff ccc $selall -i 4ake-target_autopsf.dx -res 5' ]
 
     task10.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf.dx')]
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx')]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
     tenth_stage.add_tasks(task10)

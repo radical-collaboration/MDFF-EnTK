@@ -21,20 +21,21 @@ xsede_bridges:
 xsede_supermic:
   simulation:
     pre_exec:
-      - 'export PATH=/home/vivek91/miniconda2/bin:$PATH'
+      - 'export PATH=$HOME/miniconda2/bin:$PATH'
       - 'source activate openmm_env'
       - 'export OPENMM_CPU_THREADS=20'
     cpus: 20
   
   analysis:
     pre_exec:
-      - 'export PATH=/home/vivek91/miniconda2/bin:$PATH'
+      - 'export PATH=$HOME/miniconda2/bin:$PATH'
       - 'source activate openmm_env'
     cpus: 1
 
 ornl_summit:
   simulation:
     pre_exec:
+      - 'module load fftw/3.3.8'
     cpus: 160
 
   analysis:
