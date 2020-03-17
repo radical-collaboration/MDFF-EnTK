@@ -261,29 +261,6 @@ def get_pipeline(workflow_cfg, resource):
     eighth_stage.add_tasks(task8)
     p.add_stages(eighth_stage)
 
-        eighth_stage = Stage()
-    eighth_stage.name = 'Calculating the root mean square deviation'
-    task8 = Task()
-    task8.cpu_reqs['threads_per_process'] = sim_cpus
-    task8.pre_exec = [ "module load vmd/1.9.2"]       # repeat this for all other stages 
-    task8_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]    
-    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]  # load the full mdff trajectory
-    task8_tcl_cmds += [ 'mol new 4ake-target_autopsf.pdb' ]        # load the reference pdb
-    task8_tcl_cmds += ['package require mdff',
-                       'mdff check -rmsd -refpdb 4ake-target_autopsf.pdb' ]
-
-    task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
-        first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-initial_autopsf.psf'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
-            task7.name, 'adk-step1.dcd')
-        ]
-    
-    set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
-    eighth_stage.add_tasks(task8)
-    p.add_stages(eighth_stage)
-
     
     ninth_stage = Stage()
     ninth_stage.name = 'Calculating the root mean square deviation for backbone atoms'
