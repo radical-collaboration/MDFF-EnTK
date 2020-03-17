@@ -306,7 +306,15 @@ def get_pipeline(workflow_cfg, resource):
                          'mdff ccc $selall -i 4ake-target_autopsf-grid.dx -res 5' ]
 
     task10.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx')]
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name,
+            task2.name, '4ake-target_autopsf-grid.dx'),
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
+            task3.name, '1ake-initial_autopsf.psf'),
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
+            task7.name, 'adk-step1.dcd')
+        ]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
     tenth_stage.add_tasks(task10)
