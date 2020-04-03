@@ -217,7 +217,9 @@ def get_pipeline(workflow_cfg, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-cispeptide.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'mdff_template.namd')
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'par_all27_prot_lipid_na.inp')
+        #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'par_all27_prot_lipid_na.inp')
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
+            task6.name, 'par_all36_prot.prm')
         ]
     task7.download_output_data = ['adk-step1.dcd']
     seventh_stage.add_tasks(task7)
