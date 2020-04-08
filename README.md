@@ -75,8 +75,8 @@ Simulation/analysis tasks have individual resource requirements such as cpu coun
 ```
 ornl_summit:
   simulation:
-    pre_exec:
-        - 'module load fftw/3.3.8'
+    pre_exec:                      # list of commands prior to execute
+        - 'module load fftw/3.3.8' # new command can be added in a new line
     cpus: 160
 ```
 
