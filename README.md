@@ -63,7 +63,7 @@ ornl_summit:             # key name to recognize resource, this is also used in 
   walltime: 30          # walltime in minute
   cpus: 168             # the number of CPUs, and the number of nodes is calculated based on the cpu counts. For example, Summit provides 168 usable processes per node, and then 168 requires 1 node. 169+ requires 2+ nodes as well.
   gpus: 0               # the number of GPUs, and the number of nodes is calculated based on the gpu counts. Upper bounds of CPUs/GPUs are used to calculate the number of nodes.
-  queue: 'batch'
+  queue: 'batch'         # system queue name which the job will be dispatched, Summit has `batch` and `killable` queues with different policies.
   access_schema: 'local' # remote access method, there are `ssh`, `gsissh`, and `local`
   project: 'CSC393'      # project id to gain allocation
 ```
