@@ -90,7 +90,7 @@ export RMQ_PORT=33239
 ## FAQ
 
 - Q. Does an argument exist to specify the number of nodes in the resource file [resource_cfg.yml](resource_cfg.yml)? 
-- A. It does not have an argument for node counts but cpu counts. For example, you place 56 cpus on Bridges (56cpus = 2nodes; 28 each according to [the document](https://portal.xsede.org/psc-bridges)). FOR summit, 168 cpus indicate 1 node (2 sockets * 21 cpus * 4 hw threads) according to [the document](https://docs.olcf.ornl.gov/systems/summit_user_guide.html).
+- A. It does not have an argument for node counts but cpu counts. For example, you place 56 cpus on Bridges (56cpus = 2nodes; 28 each according to [the document](https://portal.xsede.org/psc-bridges)). For summit, 168 cpus indicate 1 node (2 sockets * 21 cpus * 4 hw threads) according to [the document](https://docs.olcf.ornl.gov/systems/summit_user_guide.html).
 For more number of nodes e.g. 4,8,16, … you can multiply cpu counts in the file.
 
 ## Issue reporting
