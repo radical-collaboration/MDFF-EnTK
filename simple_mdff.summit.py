@@ -206,7 +206,7 @@ def get_pipeline(workflow_cfg, resource):
     task7.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task7.pre_exec = sim_pre_exec
     task7.executable = [ namd_path ]
-    task7.arguments = ['+ppn', sim_cpus, 'adk-step1.namd']
+    task7.arguments = ['+ppn', summit_hw_thread_cnt, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf.psf'),
@@ -216,7 +216,8 @@ def get_pipeline(workflow_cfg, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-chirality.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-cispeptide.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds.txt'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'mdff_template.namd')
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
+            task6.name, 'mdff_template.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'par_all27_prot_lipid_na.inp')
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
             task6.name, 'par_all36_prot.prm')
