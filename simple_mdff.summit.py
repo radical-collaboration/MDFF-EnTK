@@ -57,7 +57,7 @@ def get_pipeline(workflow_cfg, resource):
 
     task1_output = ['4ake-target_autopsf.situs']
     task2_output = ['4ake-target_autopsf-grid.dx']
-    task3_output = ['1ake-initial_autopsf-grid.pdb']
+    task3_output = ['1ake-docked-noh_autopsf-grid.pdb']
     task4_output = ['1ake-extrabonds.txt']
     task5_output = ['1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
 
@@ -73,7 +73,6 @@ def get_pipeline(workflow_cfg, resource):
     task1.name = 'Starting to load the target PDB'
     task1.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task1.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    task1.pre_exec = [ "/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/4ake-target.pdb" ]
     task1_tcl_cmds = [ 'mol new 4ake-target.pdb' ]
     task1_tcl_cmds += [ 'package require autopsf' ]
     task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
@@ -113,12 +112,11 @@ def get_pipeline(workflow_cfg, resource):
     task3.name = 'Starting to load the initial structure'
     task3.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task3.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    task3.pre_exec = [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-initial.pdb' ]
-    task3_tcl_cmds = [ 'mol new 1ake-initial.pdb' ]
+    task3_tcl_cmds = [ 'mol new 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require autopsf' ]
-    task3_tcl_cmds += [ 'autopsf 1ake-initial.pdb' ]
+    task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require mdff' ]
-    task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {}'.format(task3_output[0]) ]
+    task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {}'.format(task3_output[0]) ]
 
     set_vmd_run(task3, task3_tcl_cmds, "third_stage.tcl")
     third_stage.add_tasks(task3)
@@ -132,12 +130,12 @@ def get_pipeline(workflow_cfg, resource):
     task4.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task4.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
     task4_tcl_cmds = [ 'package require ssrestraints',
-            'mol new 1ake-initial_autopsf.psf',
-            'mol addfile 1ake-initial_autopsf.pdb',
-            'ssrestraints -psf 1ake-initial_autopsf.psf -pdb 1ake-initial_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
+            'mol new 1ake-docked-noh_autopsf.psf',
+            'mol addfile 1ake-docked-noh_autopsf.pdb',
+            'ssrestraints -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {} -hbonds'.format(task4_output[0]) ]
 
-    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
+    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.psf')]
 
     set_vmd_run(task4, task4_tcl_cmds, "fourth_stage.tcl")
     fourth_stage.add_tasks(task4)
@@ -150,15 +148,15 @@ def get_pipeline(workflow_cfg, resource):
     task5 = Task()
     task5.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
     task5.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
-    task5_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf',
-            'mol addfile 1ake-initial_autopsf.pdb',
+    task5_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
+            'mol addfile 1ake-docked-noh_autopsf.pdb',
             'package require cispeptide',
             'package require chirality',
             'cispeptide restrain -o {}'.format(task5_output[0]),
             'chirality restrain -o {}'.format(task5_output[1])]
 
-    task5.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf')]
+    task5.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.psf')]
 
     set_vmd_run(task5, task5_tcl_cmds, 'fifth_stage.tcl')
     fifth_stage.add_tasks(task5)
@@ -170,25 +168,18 @@ def get_pipeline(workflow_cfg, resource):
     task6 = Task()
     task6.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task6.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    #task6.pre_exec += [ '/usr/bin/wget https://www.ks.uiuc.edu/Training/Tutorials/science/mdff/mdff-tutorial-files/2-mdff-vacuo/1ake-colores.pdb' ]
-    task6.pre_exec += [ 'mv 1ake-initial_autopsf.pdb 1ake-initial_autopsf-docked.pdb' ] 
     task6_tcl_cmds = [ 'package require mdff' ]
-    task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf ' \
-            + '-pdb 1ake-initial_autopsf-docked.pdb ' \
+    task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-docked-noh_autopsf.psf ' \
+            + '-pdb 1ake-docked-noh_autopsf-docked.pdb ' \
             + '-griddx 4ake-target_autopsf-grid.dx ' \
-            + '-gridpdb 1ake-initial_autopsf-grid.pdb ' \
+            + '-gridpdb 1ake-docked-noh_autopsf-grid.pdb ' \
             + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
             + '-gscale 0.3 -numsteps 50000' ]
-    # task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-initial_autopsf.psf ' \
-    #         + '-pdb 1ake-initial_autopsf-docked.pdb ' \
-    #         + '-griddx 4ake-target_autopsf-grid.dx ' \
-    #         + '-gridpdb 1ake-initial_autopsf-grid.pdb ' \
-    #         + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
-    #         + '-gscale 10 -minsteps 2000 -numsteps 0 -step 2' ]
+    
     task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf.psf'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-initial_autopsf-grid.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.psf'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf-grid.pdb'),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, task4_output[0]),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, task5_output[0]),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, task5_output[1])]
@@ -209,9 +200,9 @@ def get_pipeline(workflow_cfg, resource):
     task7.arguments = ['+ppn', summit_hw_thread_cnt, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf.psf'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-docked.pdb'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-initial_autopsf-grid.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf-docked.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf-grid.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '4ake-target_autopsf-grid.dx'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-chirality.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-cispeptide.txt'),
@@ -236,8 +227,8 @@ def get_pipeline(workflow_cfg, resource):
     #
     # mol new 4ake-target_autopsf.psf    
     # mol addfile 4ake-target_autopsf.pdb  
-    # mol new 1ake-initial_autopsf.psf   
-    # mol addfile 1ake-initial_autopsf-docked.pdb  
+    # mol new 1ake-docked-noh_autopsf.psf   
+    # mol addfile 1ake-docked-noh_autopsf-docked.pdb  
     # mol addfile adk-step1.dcd  
     # mol addfile adk-step2.dcd
 
@@ -247,7 +238,7 @@ def get_pipeline(workflow_cfg, resource):
     task8 = Task()
     task8.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task8.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    task8_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf',
+    task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile adk-step1.dcd waitfor all',
             'mol new 4ake-target_autopsf.pdb',
             'package require mdff',
@@ -256,7 +247,7 @@ def get_pipeline(workflow_cfg, resource):
     task8.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name,
         first_stage.name, task1.name, '4ake-target_autopsf.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-initial_autopsf.psf'),
+            task3.name, '1ake-docked-noh_autopsf.psf'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'adk-step1.dcd')
         ]
@@ -271,7 +262,7 @@ def get_pipeline(workflow_cfg, resource):
     task9 = Task()
     task9.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task9.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    task9_tcl_cmds = [  'mol new 1ake-initial_autopsf.psf',
+    task9_tcl_cmds = [  'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile adk-step1.dcd waitfor all',
             'mol new 4ake-target_autopsf.pdb',
             'package require mdff',
@@ -286,7 +277,7 @@ def get_pipeline(workflow_cfg, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
             task1.name, '4ake-target_autopsf.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-initial_autopsf.psf'),
+            task3.name, '1ake-docked-noh_autopsf.psf'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'adk-step1.dcd')
         ]
@@ -300,7 +291,7 @@ def get_pipeline(workflow_cfg, resource):
     task10 = Task()
     task10.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
     task10.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
-    task10_tcl_cmds = [ 'mol new 1ake-initial_autopsf.psf' ]
+    task10_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task10_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     #task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
     task10_tcl_cmds += [ 'package require mdff',
@@ -315,7 +306,7 @@ def get_pipeline(workflow_cfg, resource):
             task2.name, '4ake-target_autopsf-grid.dx'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-initial_autopsf.psf'),
+            task3.name, '1ake-docked-noh_autopsf.psf'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'adk-step1.dcd')
