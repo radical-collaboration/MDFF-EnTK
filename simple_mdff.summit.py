@@ -82,7 +82,9 @@ def get_pipeline(workflow_cfg, resource):
     task1_tcl_cmds += [ 'mol new {}'.format(task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
-    #task.copy_input_data = ["first_stage.tcl"]
+    #task.copy_input_data = ["first_stage.tcl"j
+    task1.link_input_data = [ "$SHARED/%s" % x for x in
+            workflow_cfg[resource]['shared_data'] ]
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
     p.add_stages(first_stage)
@@ -98,7 +100,8 @@ def get_pipeline(workflow_cfg, resource):
     task2_tcl_cmds = [ 'package require mdff' ]
     task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
     task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
-
+    task2.link_input_data = [ ("$SHARED/%s" % x) for x in \
+            workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task2, task2_tcl_cmds, "second_stage.tcl")
     second_stage.add_tasks(task2)
@@ -117,6 +120,9 @@ def get_pipeline(workflow_cfg, resource):
     task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require mdff' ]
     task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {}'.format(task3_output[0]) ]
+    task3.link_input_data = [ "$SHARED/%s" % x for x in
+            workflow_cfg[resource]['shared_data']]
+
 
     set_vmd_run(task3, task3_tcl_cmds, "third_stage.tcl")
     third_stage.add_tasks(task3)
@@ -377,7 +383,7 @@ if __name__ == '__main__':
 
     # Data shared between multiple tasks can be transferred while the 
     # job is waiting on queue
-    appman.shared_data = []
+    appman.shared_data = workflow_cfg[resource]['shared_data']
 
     # Assign the workflow as a set or list of Pipelines to the Application Manager
     appman.workflow = [p]

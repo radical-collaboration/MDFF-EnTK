@@ -16,8 +16,13 @@ ornl_summit:
   simulation:
     pre_exec:
         - 'module load fftw/3.3.8'
-    cpus: 160
+    cpus: 320
   
   analysis:
     pre_exec:
     cpus: 4
+
+  shared_data:
+    - '4ake-target.pdb'
+    - '1ake-docked-noh.pdb'
+    - 'target-density-5A.dx'
