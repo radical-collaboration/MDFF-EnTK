@@ -176,7 +176,7 @@ def get_pipeline(workflow_cfg, resource):
     task6.cpu_reqs['processes'] = ana_cpus // summit_hw_thread_cnt
     task6_tcl_cmds = [ 'package require mdff' ]
     task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-docked-noh_autopsf.psf ' \
-            + '-pdb 1ake-docked-noh_autopsf-docked.pdb ' \
+            + '-pdb 1ake-docked-noh_autopsf.pdb ' \
             + '-griddx 4ake-target_autopsf-grid.dx ' \
             + '-gridpdb 1ake-docked-noh_autopsf-grid.pdb ' \
             + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
@@ -207,7 +207,7 @@ def get_pipeline(workflow_cfg, resource):
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf.psf'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf-docked.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf-grid.pdb'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '4ake-target_autopsf-grid.dx'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-extrabonds-chirality.txt'),
