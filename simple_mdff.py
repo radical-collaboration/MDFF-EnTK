@@ -345,7 +345,7 @@ if __name__ == '__main__':
         resource_cfg = yaml.load(fp)
 
     # Load workflow cfg
-    with open('./simple_mdff_cfg.yml','r') as fp:
+    with open('./workflow_cfg.yml','r') as fp:
         workflow_cfg = yaml.load(fp)
 
 
