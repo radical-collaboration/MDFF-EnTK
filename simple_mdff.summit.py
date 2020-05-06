@@ -201,6 +201,8 @@ def get_pipeline(workflow_cfg, resource):
     task7 = Task()
     task7.cpu_reqs['processes'] = int(sim_cpus) // summit_hw_thread_cnt
     task7.cpu_reqs['threads_per_process'] = summit_hw_thread_cnt
+    task7.cpu_reqs['process_type'] = 'MPI'
+    task7.cpu_reqs['thread_type'] = 'OpenMP'
     task7.pre_exec = sim_pre_exec
     task7.executable = [ namd_path ]
     task7.arguments = ['+ppn', summit_hw_thread_cnt, 'adk-step1.namd']

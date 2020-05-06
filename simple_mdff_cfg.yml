@@ -15,8 +15,10 @@ xsede_bridges:
 ornl_summit:
   simulation:
     pre_exec:
+        - 'module unload prrte'
+        - 'module load spectrum-mpi'
         - 'module load fftw/3.3.8'
-    cpus: 320
+    cpus: 160
   
   analysis:
     pre_exec:
