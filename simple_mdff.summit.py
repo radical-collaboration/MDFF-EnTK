@@ -28,13 +28,24 @@ def set_vmd_run(task, list_of_cmd, name=None):
 
 def get_pipeline(workflow_cfg, resource):
 
-    # Get workflow parameters from the workflow cfg file for the specific
-    # resource
-
     ## Extract resource-independent global parameters
     total_iters = workflow_cfg['global']['total_iters']
     ensemble_size = workflow_cfg['global']['ensemble_size']
     sim_duration = workflow_cfg['global']['sim_duration']
+
+    # Create one Pipeline for the entire workflow. The Pipeline contains 1 
+    # Simulation stage and 1 Analysis stage per iteration.
+    # Please refer to the API reference for more details about Pipeline, Stage,
+    # Task. Link: https://radicalentk.readthedocs.io/en/latest/api/app_create.html
+    p = Pipeline()
+    p.name = 'simple-mdff'
+
+    for _ in range(total_iters):
+        one_cycle(p, workflow_cfg, resource) # update pipeline, p 
+    return p
+
+
+def one_cycle(p, workflow_cfgs, resource):
 
     ## Simulation related parameters
     sim_pre_exec = workflow_cfg[resource]['simulation']['pre_exec']
@@ -45,19 +56,12 @@ def get_pipeline(workflow_cfg, resource):
     ana_cpus = workflow_cfg[resource]['analysis']['cpus']
 
 
-    # Create one Pipeline for the entire workflow. The Pipeline contains 1 
-    # Simulation stage and 1 Analysis stage per iteration.
-    # Please refer to the API reference for more details about Pipeline, Stage,
-    # Task. Link: https://radicalentk.readthedocs.io/en/latest/api/app_create.html
-    p = Pipeline()
-    p.name = 'simple-mdff'
-
-
     task1_output = ['4ake-target_autopsf.situs']
     task2_output = ['4ake-target_autopsf-grid.dx']
     task3_output = ['1ake-docked-noh_autopsf-grid.pdb']
     task4_output = ['1ake-extrabonds.txt']
     task5_output = ['1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
+
 
 
     first_stage = Stage()
@@ -322,8 +326,6 @@ def get_pipeline(workflow_cfg, resource):
     tenth_stage.add_tasks(task10)
     p.add_stages(tenth_stage)
 
-
-    return p
 
 if os.environ.get('RADICAL_ENTK_VERBOSE') == None:
     os.environ['RADICAL_ENTK_REPORT'] = 'True'
