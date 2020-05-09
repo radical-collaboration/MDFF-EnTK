@@ -307,9 +307,9 @@ def one_cycle(p, workflow_cfgs, resource):
     task10_tcl_cmds += [ 'package require mdff',
                          'set selall [atomselect 0 "all"]',
                          '$selall frame 0',
-                         'mdff ccc $selall -i 4ake-target_autopsf-grid.dx -res 5',
+                         'mdff ccc $selall -i target-density-5A.dx -res 5',
                          '$selall frame last',
-                         'mdff ccc $selall -i 4ake-target_autopsf-grid.dx -res 5' ]
+                         'mdff ccc $selall -i target-density-5A.dx -res 5' ]
 
     task10.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name,
@@ -321,6 +321,8 @@ def one_cycle(p, workflow_cfgs, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'adk-step1.dcd')
         ]
+    task10.link_input_data = [ "$SHARED/%s" % x for x in
+            workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
     tenth_stage.add_tasks(task10)
