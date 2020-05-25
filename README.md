@@ -5,21 +5,68 @@
 
 ### Python virtualenv activation
 
+The command activate python with RADICAL Cybertools, otherwise python does not recognize RCT e.g. EnTK.
+
 ```
 source $HOME/simple_mdff/bin/activate
 ```
 
+Conda works fine, if preferred. e.g. `conda activate simple_mdff`
 
 ### ORNL Summit
+
+The special script for Summit loads configuration files and start a workflow described by:
 
 ```
  python simple_mdff.summit.py
 ```
 
+The example output message on the screen is like:
+
+```
+EnTK session: re.session.login4.hrlee.018391.0000
+Creating AppManagerSetting up RabbitMQ system                                 ok
+                                                                              ok
+Validating and assigning resource manager                                     ok
+Setting up RabbitMQ system                                                   n/a
+new session: [re.session.login4.hrlee.018391.0000]                             \
+database   : [mongodb://rct:rct_test@two.radical-project.org/rct_test]        ok
+create pilot manager                                                          ok
+submit 1 pilot(s)
+        [ornl.summit:336]
+                                                                              ok
+All components created
+create unit managerUpdate: simple-mdff state: SCHEDULING
+Update: simple-mdff.Generating a simulated density map state: SCHEDULING
+Update: simple-mdff.Generating a simulated density map.Starting to load the target PDB state: SCHEDULING
+Update: simple-mdff.Generating a simulated density map.Starting to load the target PDB state: SCHEDULED
+Update: simple-mdff.Generating a simulated density map state: SCHEDULED
+...
+```
+It shows that one pilot job (here it is a EnTK workflow) is submitted to `ornl.summit` resource with 336 cpu cores (== 2 nodes, where 1 node has 168 cores by 42 physical cores * 4 hw threads), and the first stage is scheduled to start. The messages of the sebsequent stages are supressed but states are reported like `SCHEDULED`, `EXECUTED`, and `DONE`. If there was a problem executing the task, you may find `FAILED` with the stage/task name on your screen. Also note that this runs on foreground so the terminal needs to be active until a job finishes. `tmux`, `screen`, or `nohup` are recommended to avoid any interruption if a workflow runs very long time.
+
+
 ### XSEDE Bridges
+
+We also have tested XSEDE Bridges with the following script. Run it like:
 
 ```
  python simple_mdff.py --resource xsede_bridges
+```
+
+## OUTPUT/RESULTS
+
+If you remember your session id of your last run e.g. `re.session.login4.hrlee.018391.0000`, you will find raw output/results here on Summit:
+```
+$MEMBERWORK/[PROJECT ID]/radical.pilot.sandbox/[SESSION ID]/pilot.0000
+```
+
+for example with the session id above and project id `csc393`:
+
+```
+cd $MEMBERWORK/csc393/radical.pilot.sandbox/re.session.login4.hrlee.018391.0000/pilot.0000
+$ ls -d uni*/
+unit.000000/  unit.000001/  unit.000002/  unit.000003/  unit.000004/  unit.000005/  unit.000006/  unit.000007/  unit.000008/  unit.000009/
 ```
 
 ## Software Dependency
