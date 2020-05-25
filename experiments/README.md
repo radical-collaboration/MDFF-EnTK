@@ -11,12 +11,12 @@ Each directory contains the result of the workflow execution with tasks, and the
 
 ## Summit
 
-- simple_mdff_1st: failed at stage 6	
-- simple_mdff_2nd: finished but `target-density-5A.dx` isn't used at stage 10
-- simple_mdff_2nd_5_replica: finished with 5 replica
-- simple_mdff_final: finished 1 iteration with `target-density-5A.dx`
-- simple_mdff_final_5_replica: finished with 5 replica
+- [simple_mdff_1st](summit/simple_mdff_1st): failed at stage 6	
+- [simple_mdff_2nd](summit/simple_mdff_2nd): finished but `target-density-5A.dx` isn't used at stage 10
+- [simple_mdff_2nd_5_replica](summit/simple_mdff_2nd_5_replica): finished with 5 replica
+- [simple_mdff_final](summit/simple_mdff_final): finished 1 iteration with `target-density-5A.dx`
+- [simple_mdff_final_5_replica](summit/simple_mdff_final_5_replica): finished with 5 replica
 
 ## Bridges
 
-- simple_mdff_1st: first complete set of task executions
+- [simple_mdff_1st](brides/simple_mdff_1st): first complete set of task executions
