@@ -342,18 +342,19 @@ if __name__ == '__main__':
 
     # Parse arguments from the command line
     parser = argparse.ArgumentParser(description='Process some arguments to get resource and workflow cfgs')
-    parser.add_argument('--resource', help='path to workflow cfg file', required=False, default='xsede_supermic')
+    parser.add_argument('--resource', help='path to workflow cfg file',
+            required=False, default='ornl_summit')
     args = parser.parse_args()
     resource = args.resource
 
 
     # Load resource cfg 
     with open('cfg/resource_cfg.yml','r') as fp:
-        resource_cfg = yaml.load(fp)
+        resource_cfg = yaml.load(fp, Loader=yaml.Loader)
 
     # Load workflow cfg
     with open('cfg/workflow_cfg.yml','r') as fp:
-        workflow_cfg = yaml.load(fp)
+        workflow_cfg = yaml.load(fp, Loader=yaml.Loader)
 
 
     # Create Pipeline
@@ -363,6 +364,10 @@ if __name__ == '__main__':
     # for stage in p.stages:
     #     for task in stage.tasks:
     #         pprint (task.to_dict())
+
+    # configure mongodb
+    if 'mongodb' in resource_cfg:
+        os.environ['RADICAL_PILOT_DBURL'] = resource_cfg['mongodb']['url']
 
     # Create Application Manager
     appman = AppManager(hostname=resource_cfg['rabbitmq']['hostname'], 

@@ -357,6 +357,10 @@ if __name__ == '__main__':
     #     for task in stage.tasks:
     #         pprint (task.to_dict())
 
+    # configure mongodb
+    if 'mongodb' in resource_cfg:
+        os.environ['RADICAL_PILOT_DBURL'] = resource_cfg['mongodb']['url']
+
     # Create Application Manager
     appman = AppManager(hostname=resource_cfg['rabbitmq']['hostname'], 
                         port=resource_cfg['rabbitmq']['port'])
