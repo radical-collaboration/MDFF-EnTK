@@ -1,5 +1,5 @@
 
-# Simple MDFF
+# NAMD-EnTK
 
 ## Run
 
@@ -7,9 +7,13 @@
 
 ```
 source $HOME/simple_mdff/bin/activate
-export RMQ_HOSTNAME='two.radical-project.org'
+export RMQ_HOSTNAME='129.114.17.233'
 export RMQ_PORT=33239
+export RADICAL_PILOT_DBURL=mongodb://rct:rct_test@129.114.17.233:27017/rct_test
 ```
+
+- `129.114.17.233` is the temporal host IP address, a dedicated service from `radical-project.org` will be provided soon,
+
 
 ### OLCF Summit
 
@@ -23,12 +27,15 @@ export RMQ_PORT=33239
  python simple_mdff.py --resource xsede_bridges
 ```
 
-## Dependency
+## Software Dependency
 
 - VMD
 - NAMD
-
+  - fftw (Summit)
+  
 ## Installation
+
+Necessary modules are loaded first before to use python and pip for installation.
 
 ### Modules on Summit
 
@@ -50,6 +57,9 @@ virtualenv $HOME/simple_mdff
 source $HOME/simple_mdff/bin/activate
 pip install radical.entk pyaml 
 ```
+
+Conda env also works fine.
+
 
 ## Preparation
 
@@ -83,9 +93,11 @@ ornl_summit:
 ### RabbitMQ
 
 ```
-export RMQ_HOSTNAME='two.radical-project.org'
+export RMQ_HOSTNAME='129.114.17.233'
 export RMQ_PORT=33239
 ```
+
+Again, `129.114.17.233` is a temporal host IP address, `radical-project.org` will be back online soon.
 
 ## FAQ
 
