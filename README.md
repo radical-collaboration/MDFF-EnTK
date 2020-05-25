@@ -102,6 +102,14 @@ mongodb:
 
  `129.114.17.233` is a temporal host IP address, `radical-project.org` will be back online soon.
 
+## Results of Experiments
+
+The raw results of the experiments are stored on the following directory, `experiments` per HPC system.
+Find the [README](experiments/README.md) for the details of :
+
+- [Results on Summit](experiments/summit)
+- [Results on Bridges](experiments/bridges)
+
 ## FAQ
 
 - Q. Does an argument exist to specify the number of nodes in the resource file [resource_cfg.yml](resource_cfg.yml)? 
