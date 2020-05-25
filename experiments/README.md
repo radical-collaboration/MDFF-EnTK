@@ -19,4 +19,4 @@ Each directory contains the result of the workflow execution with tasks, and the
 
 ## Bridges
 
-- [simple_mdff_1st](brides/simple_mdff_1st): first complete set of task executions
+- [simple_mdff_1st](bridges/simple_mdff_1st): first complete set of task executions
