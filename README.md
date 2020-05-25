@@ -3,25 +3,20 @@
 
 ## Run
 
-### Loading required environment setup
+### Python virtualenv activation
 
 ```
 source $HOME/simple_mdff/bin/activate
-export RMQ_HOSTNAME='129.114.17.233'
-export RMQ_PORT=33239
-export RADICAL_PILOT_DBURL=mongodb://rct:rct_test@129.114.17.233:27017/rct_test
 ```
 
-- `129.114.17.233` is the temporal host IP address, a dedicated service from `radical-project.org` will be provided soon,
 
-
-### OLCF Summit
+### ORNL Summit
 
 ```
- python simple_mdff.summit.py --resource ornl_summit
+ python simple_mdff.summit.py
 ```
 
-### PSC Bridges
+### XSEDE Bridges
 
 ```
  python simple_mdff.py --resource xsede_bridges
@@ -32,6 +27,8 @@ export RADICAL_PILOT_DBURL=mongodb://rct:rct_test@129.114.17.233:27017/rct_test
 - VMD
 - NAMD
   - fftw (Summit)
+- radical.entk
+- pyaml
   
 ## Installation
 
@@ -61,11 +58,11 @@ pip install radical.entk pyaml
 Conda env also works fine.
 
 
-## Preparation
+## Configuration (cfg directory)
 
-### HPC resource requests via YAML (resource_cfg.yml)
+### HPC job description (cfg/resource_cfg.yml)
 
-A job submission with a number of CPUs/GPUs, computing expected duration, and project ID to consume allocation is defined in the yaml file as several HPC platforms can be described, e.g. PSC Bridges and OLCF Summit.
+A job submission with a number of CPUs/GPUs, computing expected duration, and project ID to consume allocation is defined in the yaml file, and multiple HPC platforms are supported, e.g. ORNL Summit, XSEDE Bridges.
 
 ```
 ornl_summit:             # key name to recognize resource, this is also used in the parameter of `simple_mdff.py`. This has to be identical to the key name used in the workflow yaml file.
@@ -78,7 +75,7 @@ ornl_summit:             # key name to recognize resource, this is also used in 
   project: 'CSC393'      # project id to gain allocation
 ```
 
-### Workflow resource requests via YAML (simple_mdff_cfg.yml)
+### Workflow description (cfg/workflow_cfg.yml)
 
 Simulation/analysis tasks have individual resource requirements such as cpu counts and a list of pre-executables.
 
@@ -90,14 +87,28 @@ ornl_summit:
     cpus: 160
 ```
 
-### RabbitMQ
+### RabbitMQ and MongoDB
 
-```
-export RMQ_HOSTNAME='129.114.17.233'
-export RMQ_PORT=33239
+Workflow state and session data are exchanged by RabbitMQ and stored by MongoDB in RADICAL-Cybertools. The default values are provided but a local system can be used instead.
+
+- cfg/resource_cfg.yml:
+``` 
+rabbitmq:
+  hostname: '129.114.17.233'
+  port: 33239
+mongodb:
+  url: 'mongodb://rct:rct_test@129.114.17.233:27017/rct_test'
 ```
 
-Again, `129.114.17.233` is a temporal host IP address, `radical-project.org` will be back online soon.
+ `129.114.17.233` is a temporal host IP address, `radical-project.org` will be back online soon.
+
+## Results of Experiments
+
+The raw results of the experiments are stored on the following directory, `experiments` per HPC system.
+Find the [README](experiments/README.md) for the details of :
+
+- [Results on Summit](experiments/summit)
+- [Results on Bridges](experiments/bridges)
 
 ## FAQ
 
