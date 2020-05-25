@@ -341,11 +341,11 @@ if __name__ == '__main__':
 
 
     # Load resource cfg 
-    with open('./resource_cfg.yml','r') as fp:
+    with open('cfg/resource_cfg.yml','r') as fp:
         resource_cfg = yaml.load(fp)
 
     # Load workflow cfg
-    with open('./workflow_cfg.yml','r') as fp:
+    with open('cfg/workflow_cfg.yml','r') as fp:
         workflow_cfg = yaml.load(fp)
 
 
