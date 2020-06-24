@@ -6,10 +6,12 @@ global:
 xsede_bridges:
   simulation:
     pre_exec:
+        - 'module load namd/2.12_cpu'
     cpus: 28
   
   analysis:
     pre_exec:
+        - 'module load vmd/1.9.2'
     cpus: 1
 
 ornl_summit:
@@ -28,3 +30,8 @@ ornl_summit:
     - 'pdb/4ake-target.pdb'
     - 'pdb/1ake-docked-noh.pdb'
     - 'pdb/target-density-5A.dx'
+
+  path:
+    namd: '/gpfs/alpine/world-shared/bip115/NAMD_binaries/summit/NAMD_build.latest/Linux-POWER-MPI-smp-Summit/namd2'
+    vmd: 'gpfs/alpine/world-shared/bip115/VMD_binaries/VMD-1.9.3-xlc-build-2019-Dec-12/bin/vmd'
+
