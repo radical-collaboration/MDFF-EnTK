@@ -8,7 +8,6 @@ import yaml
 from pprint import pprint
 
 
-
 def to_file(list_of_cmd, fname):
     with open(fname, "w") as f:
         for l in list_of_cmd:
@@ -28,13 +27,13 @@ def set_executable_path(workflow_cfg, resource):
             namd_path = workflow_cfg[resource]['path']['namd']
 
 
-
 def set_vmd_run(task, list_of_cmd, name=None):
     fname = to_file(list_of_cmd, name or "input.tcl")
     tcl_script_in_string = "\n".join(list_of_cmd) + "\nexit"
     task.pre_exec += [ "echo '{}' > {}".format(tcl_script_in_string, name or "input.tcl")]
     task.executable = [ vmd_path + ' -dispdev text -e ' +  fname ] # to source a tcl script using command line version of vmd 
     #task.arguments = [ '-eofexit', '<', fname ]
+
 
 def get_pipeline(workflow_cfg, resource):
 
@@ -233,7 +232,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task7.cpu_reqs['thread_type'] = 'OpenMP'
     task7.pre_exec = sim_pre_exec
     task7.executable = [ namd_path ]
-    task7.arguments = ['+ppn', summit_hw_thread_cnt, 'adk-step1.namd']
+    task7.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf.psf'),
@@ -373,6 +372,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some arguments to get resource and workflow cfgs')
     parser.add_argument('--resource', help='path to workflow cfg file',
             required=False, default='ornl_summit')
+    parser.add_argument('--nodes', help='the number of nodes to use',
+            required=False)
     args = parser.parse_args()
     resource = args.resource
 
@@ -403,6 +404,11 @@ if __name__ == '__main__':
     appman = AppManager(hostname=resource_cfg['rabbitmq']['hostname'], 
                         port=resource_cfg['rabbitmq']['port'])
 
+    # override the number of nodes to start from user input parameter
+    if args.nodes and int(args.nodes) > 0:
+        resource_cfg[resource]['cpus'] = \
+                int(resource_cfg[resource]['cpus_per_node']) * int(args.nodes)
+
     # Create a dictionary describe five mandatory keys:
     # resource, walltime, cores, queue and access_schema
     res_dict = {
@@ -413,6 +419,7 @@ if __name__ == '__main__':
         'queue': resource_cfg[resource]['queue'],
         'access_schema': resource_cfg[resource]['access_schema']
         }
+    print(res_dict);import sys;sys.exit()
 
     if 'project' in resource_cfg[resource]:
         res_dict['project'] = resource_cfg[resource]['project']
