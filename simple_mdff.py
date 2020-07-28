@@ -402,7 +402,9 @@ if __name__ == '__main__':
 
     # Create Application Manager
     appman = AppManager(hostname=resource_cfg['rabbitmq']['hostname'], 
-                        port=resource_cfg['rabbitmq']['port'])
+                        port=resource_cfg['rabbitmq']['port'],
+                        username=os.environ.get('RMQ_USERID',None),
+                        password=os.environ.get('RMQ_PASSWD',None))
 
     # override the number of nodes to start from user input parameter
     if args.nodes and int(args.nodes) > 0:
@@ -419,7 +421,6 @@ if __name__ == '__main__':
         'queue': resource_cfg[resource]['queue'],
         'access_schema': resource_cfg[resource]['access_schema']
         }
-    print(res_dict);import sys;sys.exit()
 
     if 'project' in resource_cfg[resource]:
         res_dict['project'] = resource_cfg[resource]['project']
