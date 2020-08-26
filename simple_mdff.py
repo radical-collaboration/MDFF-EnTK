@@ -105,7 +105,7 @@ def one_cycle(p, workflow_cfgs, resource):
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
     #task.copy_input_data = ["first_stage.tcl"j
-    task1.link_input_data = [ "$SHARED/%s" % x for x in
+    task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
             workflow_cfg[resource]['shared_data'] ]
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
@@ -123,7 +123,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task2_tcl_cmds = [ 'package require mdff' ]
     task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
     task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
-    task2.link_input_data = [ ("$SHARED/%s" % x) for x in \
+    task2.link_input_data = [ ("$SHARED/%s" % os.path.basename(x)) for x in \
             workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task2, task2_tcl_cmds, "second_stage.tcl")
@@ -144,7 +144,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require mdff' ]
     task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {}'.format(task3_output[0]) ]
-    task3.link_input_data = [ "$SHARED/%s" % x for x in
+    task3.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
             workflow_cfg[resource]['shared_data']]
 
 
@@ -349,7 +349,7 @@ def one_cycle(p, workflow_cfgs, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'adk-step1.dcd')
         ]
-    task10.link_input_data = [ "$SHARED/%s" % x for x in
+    task10.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
             workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task10, task10_tcl_cmds, "tenth_stage.tcl")
@@ -362,11 +362,6 @@ if os.environ.get('RADICAL_ENTK_VERBOSE') == None:
 
 
 if __name__ == '__main__':
-
-    '''
-    This script is executed as:
-    python example.py --resource <resource name>
-    '''
 
     # Parse arguments from the command line
     parser = argparse.ArgumentParser(description='Process some arguments to get resource and workflow cfgs')
@@ -391,10 +386,6 @@ if __name__ == '__main__':
     # Create Pipeline
     p = get_pipeline(workflow_cfg, resource)
 
-
-    # for stage in p.stages:
-    #     for task in stage.tasks:
-    #         pprint (task.to_dict())
 
     # configure mongodb
     if 'mongodb' in resource_cfg:
