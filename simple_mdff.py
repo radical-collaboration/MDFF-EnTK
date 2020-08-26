@@ -28,10 +28,10 @@ def set_executable_path(workflow_cfg, resource):
 
 
 def set_vmd_run(task, list_of_cmd, name=None):
-    fname = to_file(list_of_cmd, name or "input.tcl")
+    #fname = to_file(list_of_cmd, name or "input.tcl")
     tcl_script_in_string = "\n".join(list_of_cmd) + "\nexit"
     task.pre_exec += [ "echo '{}' > {}".format(tcl_script_in_string, name or "input.tcl")]
-    task.executable = [ vmd_path + ' -dispdev text -e ' +  fname ] # to source a tcl script using command line version of vmd 
+    task.executable = [ vmd_path + ' -dispdev text -e ' +  name or "input.tcl" ] # to source a tcl script using command line version of vmd 
     #task.arguments = [ '-eofexit', '<', fname ]
 
 
@@ -92,7 +92,7 @@ def one_cycle(p, workflow_cfgs, resource):
     # Create tasks and add them to stage
     task1 = Task()
     task1.name = 'Starting to load the target PDB'
-    task1.pre_exec = ana_pre_exec
+    task1.pre_exec = ana_pre_exec.copy()
     task1.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task1.cpu_reqs['processes'] = ana_process_cnt
     task1_tcl_cmds = [ 'mol new 4ake-target.pdb' ]
@@ -117,7 +117,7 @@ def one_cycle(p, workflow_cfgs, resource):
 
     task2 = Task()
     task2.name = 'generate dx file'
-    task2.pre_exec = ana_pre_exec
+    task2.pre_exec = ana_pre_exec.copy()
     task2.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task2.cpu_reqs['processes'] = ana_process_cnt
     task2_tcl_cmds = [ 'package require mdff' ]
@@ -136,7 +136,7 @@ def one_cycle(p, workflow_cfgs, resource):
 
     task3 = Task()
     task3.name = 'Starting to load the initial structure'
-    task3.pre_exec = ana_pre_exec
+    task3.pre_exec = ana_pre_exec.copy()
     task3.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task3.cpu_reqs['processes'] = ana_process_cnt
     task3_tcl_cmds = [ 'mol new 1ake-docked-noh.pdb' ]
@@ -157,7 +157,7 @@ def one_cycle(p, workflow_cfgs, resource):
     fourth_stage.name = 'Defining secondary structure restraints'
 
     task4 = Task()
-    task4.pre_exec = ana_pre_exec
+    task4.pre_exec = ana_pre_exec.copy()
     task4.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task4.cpu_reqs['processes'] = ana_process_cnt
     task4_tcl_cmds = [ 'package require ssrestraints',
@@ -177,7 +177,7 @@ def one_cycle(p, workflow_cfgs, resource):
     fifth_stage.name = 'cispeptide and chirality restraints'
 
     task5 = Task()
-    task5.pre_exec = ana_pre_exec
+    task5.pre_exec = ana_pre_exec.copy()
     task5.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task5.cpu_reqs['processes'] = ana_process_cnt
     task5_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
@@ -198,7 +198,7 @@ def one_cycle(p, workflow_cfgs, resource):
     sixth_stage = Stage()
     sixth_stage.name = 'Running the MDFF simulation with NAMD'
     task6 = Task()
-    task6.pre_exec = ana_pre_exec
+    task6.pre_exec = ana_pre_exec.copy()
     task6.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task6.cpu_reqs['processes'] = ana_process_cnt
     task6_tcl_cmds = [ 'package require mdff' ]
@@ -271,7 +271,7 @@ def one_cycle(p, workflow_cfgs, resource):
     eighth_stage = Stage()
     eighth_stage.name = 'Calculating the root mean square deviation'
     task8 = Task()
-    task8.pre_exec = ana_pre_exec
+    task8.pre_exec = ana_pre_exec.copy()
     task8.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task8.cpu_reqs['processes'] = ana_process_cnt
     task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
@@ -296,7 +296,7 @@ def one_cycle(p, workflow_cfgs, resource):
     ninth_stage = Stage()
     ninth_stage.name = 'Calculating the root mean square deviation for backbone atoms'
     task9 = Task()
-    task9.pre_exec = ana_pre_exec
+    task9.pre_exec = ana_pre_exec.copy()
     task9.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task9.cpu_reqs['processes'] = ana_process_cnt
     task9_tcl_cmds = [  'mol new 1ake-docked-noh_autopsf.psf',
@@ -326,7 +326,7 @@ def one_cycle(p, workflow_cfgs, resource):
     tenth_stage = Stage()
     tenth_stage.name = 'Calculating the cross-correlation coefficient'
     task10 = Task()
-    task10.pre_exec = ana_pre_exec
+    task10.pre_exec = ana_pre_exec.copy()
     task10.cpu_reqs['threads_per_process'] = ana_thread_cnt
     task10.cpu_reqs['processes'] = ana_process_cnt
     task10_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
