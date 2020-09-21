@@ -18,8 +18,12 @@ ornl_summit:
   simulation:
     pre_exec:
         - 'module unload prrte'
+        - 'module load cuda'
         - 'module load spectrum-mpi'
-        - 'module load fftw/3.3.8'
+        - 'module load fftw'
+        - 'export LD_LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-5/spectrum-mpi-10.3.1.2-20200121-p6nrnt6vtvkn356wqg6f74n6jspnpjd2/lib/pami_port:$LD_LIBRARY_PATH'
+        - 'export LD_PRELOAD=/opt/ibm/spectrum_mpi/lib/libpami_cudahook.so:$LD_PRELOAD'
+        - 'unset CUDA_VISIBLE_DEVICES'
     cpus: 160
   
   analysis:
@@ -32,6 +36,6 @@ ornl_summit:
     - 'pdb/target-density-5A.dx'
 
   path:
-    namd: '/gpfs/alpine/world-shared/bip115/NAMD_binaries/summit/NAMD_build.latest/Linux-POWER-MPI-smp-Summit/namd2'
+    namd: '/gpfs/alpine/world-shared/bip115/NAMD_binaries/summit/NAMD_LATEST_Linux-POWER-pami-smp-Summit-CUDA/namd2'
     vmd: '/gpfs/alpine/world-shared/bip115/VMD_binaries/VMD-1.9.3-xlc-build-2019-Dec-12/bin/vmd'
 

@@ -227,12 +227,16 @@ def one_cycle(p, workflow_cfgs, resource):
     seventh_stage.name = "NAMD simulation"
     task7 = Task()
     task7.cpu_reqs['threads_per_process'] = sim_thread_cnt
-    task7.cpu_reqs['processes'] = sim_process_cnt
+    task7.cpu_reqs['processes'] = 6#sim_process_cnt
     task7.cpu_reqs['process_type'] = 'MPI'
     task7.cpu_reqs['thread_type'] = 'OpenMP'
+    task7.gpu_reqs['processes'] = 1
+    task7.gpu_reqs['thread_type'] = 'CUDA'
     task7.pre_exec = sim_pre_exec
     task7.executable = [ namd_path ]
-    task7.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
+    task7.arguments = [ '+ignoresharing',
+            '+devices', 0,
+            '+ppn', sim_thread_cnt, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, '1ake-docked-noh_autopsf.psf'),
