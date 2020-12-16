@@ -31,7 +31,7 @@ def set_vmd_run(task, list_of_cmd, name=None):
     #fname = to_file(list_of_cmd, name or "input.tcl")
     tcl_script_in_string = "\n".join(list_of_cmd) + "\nexit"
     task.pre_exec += [ "echo '{}' > {}".format(tcl_script_in_string, name or "input.tcl")]
-    task.executable = [ vmd_path + ' -dispdev text -e ' +  name or "input.tcl" ] # to source a tcl script using command line version of vmd 
+    task.executable =  vmd_path + ' -dispdev text -e ' +  name or "input.tcl" # to source a tcl script using command line version of vmd 
     #task.arguments = [ '-eofexit', '<', fname ]
 
 
@@ -231,7 +231,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task7.cpu_reqs['process_type'] = 'MPI'
     task7.cpu_reqs['thread_type'] = 'OpenMP'
     task7.pre_exec = sim_pre_exec
-    task7.executable = [ namd_path ]
+    task7.executable = namd_path
     task7.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
     task7.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step1.namd'),
         #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name, task6.name, 'adk-step2.namd'),
@@ -392,10 +392,11 @@ if __name__ == '__main__':
         os.environ['RADICAL_PILOT_DBURL'] = resource_cfg['mongodb']['url']
 
     # Create Application Manager
-    appman = AppManager(hostname=resource_cfg['rabbitmq']['hostname'], 
-                        port=resource_cfg['rabbitmq']['port'],
-                        username=os.environ.get('RMQ_USERID',None),
-                        password=os.environ.get('RMQ_PASSWD',None))
+    appman = AppManager(hostname=os.environ.get('RMQ_HOSTNAME',
+        resource_cfg['rabbitmq']['hostname']), 
+        port=os.environ.get('RMQ_PORT', resource_cfg['rabbitmq']['port']),
+        username=os.environ.get('RMQ_USERNAME',None),
+        password=os.environ.get('RMQ_PASSWORD',None))
 
     # override the number of nodes to start from user input parameter
     if args.nodes and int(args.nodes) > 0:
@@ -409,9 +410,10 @@ if __name__ == '__main__':
         'resource': resource_cfg[resource]['label'],
         'walltime': resource_cfg[resource]['walltime'],
         'cpus': resource_cfg[resource]['cpus'],
-        'queue': resource_cfg[resource]['queue'],
         'access_schema': resource_cfg[resource]['access_schema']
         }
+    if 'queue' in resource_cfg[resource]:
+        res_dict['queue'] = resource_cfg[resource]['queue']
 
     if 'project' in resource_cfg[resource]:
         res_dict['project'] = resource_cfg[resource]['project']
