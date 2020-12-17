@@ -244,7 +244,7 @@ def one_cycle(p, workflow_cfgs, resource):
     seventh_stage = Stage()
     seventh_stage.name = "NAMD simulation"
     task7 = Task()
-    task6.cpu_reqs = {
+    task7.cpu_reqs = {
             'threads_per_process': sim_thread_cnt,
             'processes': sim_process_cnt,
             'process_type': 'MPI',
