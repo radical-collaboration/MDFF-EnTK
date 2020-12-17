@@ -71,7 +71,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task4_output = ['1ake-extrabonds.txt']
     task5_output = ['1ake-extrabonds-cispeptide.txt', '1ake-extrabonds-chirality.txt']
 
-    if resource == "ornl_summit":
+    if resource[0:11] == "ornl_summit":
         summit_hw_thread_cnt = 4
         ana_thread_cnt = summit_hw_thread_cnt
         ana_process_cnt = ana_cpus // summit_hw_thread_cnt
@@ -93,8 +93,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task1 = Task()
     task1.name = 'Starting to load the target PDB'
     task1.pre_exec = ana_pre_exec.copy()
-    task1.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task1.cpu_reqs['processes'] = ana_process_cnt
+    task1.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task1_tcl_cmds = [ 'mol new 4ake-target.pdb' ]
     task1_tcl_cmds += [ 'package require autopsf' ]
     task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
@@ -118,8 +121,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task2 = Task()
     task2.name = 'generate dx file'
     task2.pre_exec = ana_pre_exec.copy()
-    task2.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task2.cpu_reqs['processes'] = ana_process_cnt
+    task2.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task2_tcl_cmds = [ 'package require mdff' ]
     task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
     task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
@@ -137,8 +143,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task3 = Task()
     task3.name = 'Starting to load the initial structure'
     task3.pre_exec = ana_pre_exec.copy()
-    task3.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task3.cpu_reqs['processes'] = ana_process_cnt
+    task3.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task3_tcl_cmds = [ 'mol new 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require autopsf' ]
     task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
@@ -158,8 +167,11 @@ def one_cycle(p, workflow_cfgs, resource):
 
     task4 = Task()
     task4.pre_exec = ana_pre_exec.copy()
-    task4.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task4.cpu_reqs['processes'] = ana_process_cnt
+    task4.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task4_tcl_cmds = [ 'package require ssrestraints',
             'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile 1ake-docked-noh_autopsf.pdb',
@@ -178,8 +190,11 @@ def one_cycle(p, workflow_cfgs, resource):
 
     task5 = Task()
     task5.pre_exec = ana_pre_exec.copy()
-    task5.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task5.cpu_reqs['processes'] = ana_process_cnt
+    task5.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task5_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile 1ake-docked-noh_autopsf.pdb',
             'package require cispeptide',
@@ -199,8 +214,11 @@ def one_cycle(p, workflow_cfgs, resource):
     sixth_stage.name = 'Running the MDFF simulation with NAMD'
     task6 = Task()
     task6.pre_exec = ana_pre_exec.copy()
-    task6.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task6.cpu_reqs['processes'] = ana_process_cnt
+    task6.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task6_tcl_cmds = [ 'package require mdff' ]
     task6_tcl_cmds += [ 'mdff setup -o adk -psf 1ake-docked-noh_autopsf.psf ' \
             + '-pdb 1ake-docked-noh_autopsf.pdb ' \
@@ -226,10 +244,11 @@ def one_cycle(p, workflow_cfgs, resource):
     seventh_stage = Stage()
     seventh_stage.name = "NAMD simulation"
     task7 = Task()
-    task7.cpu_reqs['threads_per_process'] = sim_thread_cnt
-    task7.cpu_reqs['processes'] = sim_process_cnt
-    task7.cpu_reqs['process_type'] = 'MPI'
-    task7.cpu_reqs['thread_type'] = 'OpenMP'
+    task6.cpu_reqs = {
+            'threads_per_process': sim_thread_cnt,
+            'processes': sim_process_cnt,
+            'process_type': 'MPI',
+            'thread_type': 'OpenMP'}
     task7.pre_exec = sim_pre_exec
     task7.executable = namd_path
     task7.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
@@ -272,8 +291,11 @@ def one_cycle(p, workflow_cfgs, resource):
     eighth_stage.name = 'Calculating the root mean square deviation'
     task8 = Task()
     task8.pre_exec = ana_pre_exec.copy()
-    task8.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task8.cpu_reqs['processes'] = ana_process_cnt
+    task8.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile adk-step1.dcd waitfor all',
             'mol new 4ake-target_autopsf.pdb',
@@ -297,8 +319,11 @@ def one_cycle(p, workflow_cfgs, resource):
     ninth_stage.name = 'Calculating the root mean square deviation for backbone atoms'
     task9 = Task()
     task9.pre_exec = ana_pre_exec.copy()
-    task9.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task9.cpu_reqs['processes'] = ana_process_cnt
+    task9.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task9_tcl_cmds = [  'mol new 1ake-docked-noh_autopsf.psf',
             'mol addfile adk-step1.dcd waitfor all',
             'mol new 4ake-target_autopsf.pdb',
@@ -327,8 +352,11 @@ def one_cycle(p, workflow_cfgs, resource):
     tenth_stage.name = 'Calculating the cross-correlation coefficient'
     task10 = Task()
     task10.pre_exec = ana_pre_exec.copy()
-    task10.cpu_reqs['threads_per_process'] = ana_thread_cnt
-    task10.cpu_reqs['processes'] = ana_process_cnt
+    task10.cpu_reqs = {
+            'threads_per_process': ana_thread_cnt,
+            'processes': ana_process_cnt,
+            'process_type': None,
+            'thread_type': None}
     task10_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task10_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     #task10_tcl_cmds += [ 'mol new 4ake-target_autopsf.stius' ]        # load target EM density
