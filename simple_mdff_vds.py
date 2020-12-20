@@ -65,7 +65,6 @@ def one_cycle(p, workflow_cfgs, resource):
     ana_pre_exec = workflow_cfg[resource]['analysis']['pre_exec'] or []
     ana_cpus = workflow_cfg[resource]['analysis']['cpus']
 
-
     task1_output = ['4ake-target_autopsf.dx']
     task2_output = ['4ake-target_autopsf-grid.dx']
     task3_output = ['1ake-docked-noh_autopsf-grid.pdb']
@@ -105,11 +104,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
     task1_tcl_cmds += [ 'set sel [atomselect top all]' ]
     task1_tcl_cmds += [ 'package require mdff']
-    task1_tcl_cmds += [ 'mdff sim $sel -res 5 -o {}'.format(task1_output[0]) ]
+    task1_tcl_cmds += [ 'mdff sim $sel -res 3 -o {}'.format(task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
-    task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-            workflow_cfg[resource]['shared_data'] ]
+    #task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+    #        workflow_cfg[resource]['shared_data'] ]
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
     p.add_stages(first_stage)
@@ -130,8 +129,8 @@ def one_cycle(p, workflow_cfgs, resource):
     task2_tcl_cmds = [ 'package require mdff' ]
     task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
     task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
-    task2.link_input_data = [ ("$SHARED/%s" % os.path.basename(x)) for x in \
-            workflow_cfg[resource]['shared_data'] ]
+    #task2.link_input_data = [ ("$SHARED/%s" % os.path.basename(x)) for x in \
+    #        workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task2, task2_tcl_cmds, "second_stage.tcl")
     second_stage.add_tasks(task2)
@@ -155,8 +154,8 @@ def one_cycle(p, workflow_cfgs, resource):
     task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require mdff' ]
     task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {}'.format(task3_output[0]) ]
-    task3.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-            workflow_cfg[resource]['shared_data']]
+    #task3.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+    #        workflow_cfg[resource]['shared_data']]
 
 
     set_vmd_run(task3, task3_tcl_cmds, "third_stage.tcl")
@@ -245,7 +244,6 @@ def one_cycle(p, workflow_cfgs, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-extrabonds-cispeptide.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-extrabonds.txt'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name,task5.name, 'mdff_template.namd'),
-        #'$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'par_all27_prot_lipid_na.inp')
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'par_all36_prot.prm')]
 
     task6.download_output_data = ['adk-step1.dcd']
@@ -268,11 +266,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task7_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task7_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     task7_tcl_cmds += [ 'package require mdff',
-                        'mdff ccc -i target-density-5A.dx -res 5 -cccfile ccc.dat']
+                        'mdff check -ccc -map 4ake-target_autopsf.dx -res 3 waitfor -1 -cccfile all.cc.dat']
 
     task7.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name,
-            task2.name, '4ake-target_autopsf-grid.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
+            task1.name, '4ake-target_autopsf.dx'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
             task3.name, '1ake-docked-noh_autopsf.psf'),
@@ -280,8 +278,8 @@ def one_cycle(p, workflow_cfgs, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
             task6.name, 'adk-step1.dcd')
         ]
-    task7.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-            workflow_cfg[resource]['shared_data'] ]
+    #task7.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+    #        workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task7, task7_tcl_cmds, "seventh_stage.tcl")
     seventh_stage.add_tasks(task7)
@@ -300,25 +298,38 @@ def one_cycle(p, workflow_cfgs, resource):
             'thread_type': None}
     task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
-    task8_tcl_cmds += [ 'package require mdff',
+    task8_tcl_cmds += [ 'set outfilename cc.dat',
+                         'package require mdff',
                          'set selall [atomselect 0 "all"]',
                          '$selall frame 0',
-                         'mdff ccc $selall -i target-density-5A.dx -res 5',
+                         'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 3]',
                          '$selall frame last',
-                         'mdff ccc $selall -i target-density-5A.dx -res 5' ]
+                         'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 3]',
+                         'lappend cc $lcc $fcc',
+                         'set outfile [open $outfilename w]',
+                         'puts $outfile "$cc"']
 
     task8.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name,
-            task2.name, '4ake-target_autopsf-grid.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
+            task1.name, '4ake-target_autopsf.dx'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
             task3.name, '1ake-docked-noh_autopsf.psf'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.dcd')
+            task6.name, 'adk-step1.dcd'),
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
+            task6.name, 'adk-step1.restart.coor'),
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
+            task6.name, 'adk-step1.restart.vel'),
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
+            task6.name, 'adk-step1.restart.xsc')
         ]
-    task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-            workflow_cfg[resource]['shared_data'] ]
+    #task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+    #        workflow_cfg[resource]['shared_data'] ]
 
     set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
     eight_stage.add_tasks(task8)
