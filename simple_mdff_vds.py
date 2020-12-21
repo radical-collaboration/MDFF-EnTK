@@ -104,11 +104,11 @@ def one_cycle(p, workflow_cfgs, resource):
     task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
     task1_tcl_cmds += [ 'set sel [atomselect top all]' ]
     task1_tcl_cmds += [ 'package require mdff']
-    task1_tcl_cmds += [ 'mdff sim $sel -res 3 -o {}'.format(task1_output[0]) ]
+    task1_tcl_cmds += [ 'mdff sim $sel -res 1.8 -o {}'.format(task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
-    #task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-    #        workflow_cfg[resource]['shared_data'] ]
+    task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+            workflow_cfg[resource]['shared_data'] ]
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
     p.add_stages(first_stage)
@@ -154,8 +154,8 @@ def one_cycle(p, workflow_cfgs, resource):
     task3_tcl_cmds += [ 'autopsf 1ake-docked-noh.pdb' ]
     task3_tcl_cmds += [ 'package require mdff' ]
     task3_tcl_cmds += [ 'mdff gridpdb -psf 1ake-docked-noh_autopsf.psf -pdb 1ake-docked-noh_autopsf.pdb -o {}'.format(task3_output[0]) ]
-    #task3.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
-    #        workflow_cfg[resource]['shared_data']]
+    task3.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+            workflow_cfg[resource]['shared_data']]
 
 
     set_vmd_run(task3, task3_tcl_cmds, "third_stage.tcl")
@@ -266,7 +266,7 @@ def one_cycle(p, workflow_cfgs, resource):
     task7_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task7_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     task7_tcl_cmds += [ 'package require mdff',
-                        'mdff check -ccc -map 4ake-target_autopsf.dx -res 3 waitfor -1 -cccfile all.cc.dat']
+                        'mdff check -ccc -map 4ake-target_autopsf.dx -res 1.8 waitfor -1 -cccfile all.cc.dat']
 
     task7.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
@@ -302,9 +302,9 @@ def one_cycle(p, workflow_cfgs, resource):
                          'package require mdff',
                          'set selall [atomselect 0 "all"]',
                          '$selall frame 0',
-                         'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 3]',
+                         'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 1.8]',
                          '$selall frame last',
-                         'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 3]',
+                         'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 1.8]',
                          'lappend cc $lcc $fcc',
                          'set outfile [open $outfilename w]',
                          'puts $outfile "$cc"']
