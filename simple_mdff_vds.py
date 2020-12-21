@@ -46,16 +46,17 @@ def get_pipelines(workflow_cfg, resource):
     # Please refer to the API reference for more details about Pipeline, Stage,
     # Task. Link: https://radicalentk.readthedocs.io/en/latest/api/app_create.html
     pipes = []
-    for idx in range(total_iters):
+    for rep_idx in range(ensemble_size):
         p = Pipeline()
-        p.name = 'simple-mdff-replica-%s' % idx
+        p.name = 'simple-mdff-replica-%s' % rep_idx
 
-        one_cycle(p, workflow_cfg, resource) # update pipeline, p 
+        for iter_idx in range(total_iters):
+            one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx) # update pipeline, p 
         pipes.append(p)
     return pipes
 
 
-def one_cycle(p, workflow_cfgs, resource):
+def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
 
     ## Simulation related parameters
     sim_pre_exec = workflow_cfg[resource]['simulation']['pre_exec'] or []
@@ -246,6 +247,17 @@ def one_cycle(p, workflow_cfgs, resource):
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name,task5.name, 'mdff_template.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'par_all36_prot.prm')]
 
+    if iter_idx != 0:
+        task6.pre_exec += ['export fpath=`grep -v "a" $RP_PILOT_STAGING/*_{}_cc.dat|sort -k2 -n -r|head -n1|cut -d":" -f1`'.format(iter_idx-1),
+              'export fname=`basename $fpath`', 
+              'echo $fname',
+              'echo $fpath',
+              'replica_id=`echo $fname|cut -d_ -f1`',
+              'iter_id=`echo $fname|cut -d_ -f2`',
+              'echo $replica_id, $iter_id',
+              'cp $RP_PILOT_STAGING/${replica_id}_${iter_id}_*restart.* .',
+              'cp $fpath .']
+
     task6.download_output_data = ['adk-step1.dcd']
     sixth_stage.add_tasks(task6)
     p.add_stages(sixth_stage)
@@ -330,6 +342,11 @@ def one_cycle(p, workflow_cfgs, resource):
         ]
     #task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
+    task8.copy_output_data = [
+            'adk-step1.restart.coor > $SHARED/{}_{}_adk-step1.restart.coor'.format(rep_idx, iter_idx),
+            'adk-step1.restart.vel > $SHARED/{}_{}_adk-step1.restart.vel'.format(rep_idx, iter_idx),
+            'adk-step1.restart.xsc > $SHARED/{}_{}_adk-step1.restart.xsc'.format(rep_idx, iter_idx),
+            'cc.dat > $SHARED/{}_{}_cc.dat'.format(rep_idx, iter_idx)]
 
     set_vmd_run(task8, task8_tcl_cmds, "eighth_stage.tcl")
     eight_stage.add_tasks(task8)
@@ -388,7 +405,7 @@ if __name__ == '__main__':
 
         'resource': resource_cfg[resource]['label'],
         'walltime': resource_cfg[resource]['walltime'],
-        'cpus': resource_cfg[resource]['cpus'],
+        'cpus': resource_cfg[resource]['cpus'] * workflow_cfg['global']['ensemble_size'],
         'access_schema': resource_cfg[resource]['access_schema']
         }
     if 'queue' in resource_cfg[resource]:
