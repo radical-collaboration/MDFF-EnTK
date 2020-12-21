@@ -217,7 +217,6 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
     for filename in task4_output:
         task5.copy_input_data += [
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, filename)]
-    print (vars(task5))
 
     set_vmd_run(task5, task5_tcl_cmds, "fifth_stage.tcl")
     fifth_stage.add_tasks(task5)
@@ -233,7 +232,7 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
             'processes': sim_process_cnt,
             'process_type': 'MPI',
             'thread_type': 'OpenMP'}
-    task6.pre_exec = sim_pre_exec
+    task6.pre_exec = sim_pre_exec.copy()
     task6.executable = namd_path
     task6.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
     task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'adk-step1.namd'),
