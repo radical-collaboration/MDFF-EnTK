@@ -255,7 +255,8 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
               'iter_id=`echo $fname|cut -d_ -f2`',
               'echo $replica_id, $iter_id',
               'cp $RP_PILOT_STAGING/${replica_id}_${iter_id}_*restart.* .',
-              'cp $fpath .']
+              'cp $fpath .',
+              'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}_adk-step1\n\n#####/" adk-step1.namd']
 
     task6.download_output_data = ['adk-step1.dcd']
     sixth_stage.add_tasks(task6)
