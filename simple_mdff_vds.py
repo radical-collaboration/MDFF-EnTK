@@ -256,9 +256,17 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
               'echo $replica_id, $iter_id',
               'cp $RP_PILOT_STAGING/${replica_id}_${iter_id}_*restart.* .',
               'cp $fpath .',
-              'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}_adk-step1\\n\\n#####/" adk-step1.namd']
-
-    task6.download_output_data = ['adk-step1.dcd']
+              'iter_indxpp=$(( iter_idx+1 ))',		
+              'touch adk-step${iter_idxpp}.namd',
+              'head -n 17 adk-step1.namd >> adk-step${iter_idxpp}.namd',
+              'echo "set OUTPUTNAME adk-step${iter_idxpp}" >> adk-step${iter_idxpp}.namd',
+              'echo "set INPUTNAME adk-step${iter_idx}" >> adk-step${iter_idxpp}.namd',
+              'tail -n 23 adk-step1.namd >> adk-step${iter_idxpp}.namd'] 
+              #'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}_adk-step1\\n\\n#####/" adk-step1.namd']
+    if check_dcd = 'adk-step${iter_idxpp}.dcd':
+        task6.pre_exec += ['ln -s adk-step${iter_idxpp}.dcd adk-step1.dcd']      
+    # note: for now this remains but ideally should be changed. not changed because of subsequent stages
+    task6.download_output_data = ['adk-step1.dcd']   
     sixth_stage.add_tasks(task6)
     p.add_stages(sixth_stage)
 
