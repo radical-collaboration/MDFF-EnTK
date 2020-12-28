@@ -68,6 +68,10 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
 
     resolution = workflow_cfg['global']['resolution']
 
+    gscale = workflow_cfg['global']['gscale']
+    minsteps = workflow_cfg['global']['minsteps']
+    numsteps = workflow_cfg['global']['numsteps']
+
     task1_output = ['4ake-target_autopsf.dx']
     task2_output = ['4ake-target_autopsf-grid.dx']
     task3_output = ['1ake-docked-noh_autopsf-grid.pdb']
@@ -193,6 +197,9 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
     fourth_stage.add_tasks(task4)
     p.add_stages(fourth_stage)
 
+    if iter_idx != 0:
+        minsteps = 0
+        
     # Setting up MDFF
     fifth_stage = Stage()
     fifth_stage.name = 'Running the MDFF simulation with NAMD'
@@ -210,7 +217,7 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
             + '-griddx 4ake-target_autopsf-grid.dx ' \
             + '-gridpdb 1ake-docked-noh_autopsf-grid.pdb ' \
             + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
-            + '-gscale 0.3 -minsteps 1000 -numsteps 100000' ]
+            + f'-gscale {gscale} -minsteps {minsteps} -numsteps {numsteps}' ]
     
     task5.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx'),
             '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
@@ -264,7 +271,7 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
               #'echo "set OUTPUTNAME adk-step${iter_idxpp}" >> adk-step${iter_idxpp}.namd',
               #'echo "set INPUTNAME ${replica_id}_${iter_id}_adk-step{}" >> adk-step${iter_idxpp}.namd'.format(iter_idx),
               #'tail -n 23 adk-step1.namd >> adk-step${iter_idxpp}.namd'] 
-              'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}\\n\\n#####/" adk-step1.namd']
+              'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}_adk-step1\\n\\n#####/" adk-step1.namd']
     #task6.post_exec = ['if [ -f "adk-step${iter_idxpp}.dcd" ]; then ln -s adk-step${iter_idxpp}.dcd adk-step1.dcd; fi']
     # note: for now this remains but ideally should be changed. not changed because of subsequent stages
     task6.download_output_data = ['adk-step1.dcd']   
