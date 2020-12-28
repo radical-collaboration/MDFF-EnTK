@@ -66,6 +66,8 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
     ana_pre_exec = workflow_cfg[resource]['analysis']['pre_exec'] or []
     ana_cpus = workflow_cfg[resource]['analysis']['cpus']
 
+    resolution = workflow_cfg['global']['resolution']
+
     task1_output = ['4ake-target_autopsf.dx']
     task2_output = ['4ake-target_autopsf-grid.dx']
     task3_output = ['1ake-docked-noh_autopsf-grid.pdb']
@@ -105,7 +107,7 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
     task1_tcl_cmds += [ 'autopsf 4ake-target.pdb' ]
     task1_tcl_cmds += [ 'set sel [atomselect top all]' ]
     task1_tcl_cmds += [ 'package require mdff']
-    task1_tcl_cmds += [ 'mdff sim $sel -res 1.8 -o {}'.format(task1_output[0]) ]
+    task1_tcl_cmds += [ 'mdff sim $sel -res {} -o {}'.format(resolution, task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
     task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
@@ -256,15 +258,14 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
               'echo $replica_id, $iter_id',
               'cp $RP_PILOT_STAGING/${replica_id}_${iter_id}_*restart.* .',
               'cp $fpath .',
-              'iter_indxpp=$(( iter_idx+1 ))',		
-              'touch adk-step${iter_idxpp}.namd',
-              'head -n 17 adk-step1.namd >> adk-step${iter_idxpp}.namd',
-              'echo "set OUTPUTNAME adk-step${iter_idxpp}" >> adk-step${iter_idxpp}.namd',
-              'echo "set INPUTNAME adk-step${iter_idx}" >> adk-step${iter_idxpp}.namd',
-              'tail -n 23 adk-step1.namd >> adk-step${iter_idxpp}.namd'] 
-              #'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}_adk-step1\\n\\n#####/" adk-step1.namd']
-    if check_dcd = 'adk-step${iter_idxpp}.dcd':
-        task6.pre_exec += ['ln -s adk-step${iter_idxpp}.dcd adk-step1.dcd']      
+              #'iter_idxpp={}'.format(iter_idx + 1),		
+              #'touch adk-step${iter_idxpp}.namd',
+              #'head -n 17 adk-step1.namd >> adk-step${iter_idxpp}.namd',
+              #'echo "set OUTPUTNAME adk-step${iter_idxpp}" >> adk-step${iter_idxpp}.namd',
+              #'echo "set INPUTNAME ${replica_id}_${iter_id}_adk-step{}" >> adk-step${iter_idxpp}.namd'.format(iter_idx),
+              #'tail -n 23 adk-step1.namd >> adk-step${iter_idxpp}.namd'] 
+              'sed -i -- "s/#####/set INPUTNAME ${replica_id}_${iter_id}\\n\\n#####/" adk-step1.namd']
+    #task6.post_exec = ['if [ -f "adk-step${iter_idxpp}.dcd" ]; then ln -s adk-step${iter_idxpp}.dcd adk-step1.dcd; fi']
     # note: for now this remains but ideally should be changed. not changed because of subsequent stages
     task6.download_output_data = ['adk-step1.dcd']   
     sixth_stage.add_tasks(task6)
@@ -286,7 +287,7 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
     task7_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task7_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
     task7_tcl_cmds += [ 'package require mdff',
-                        'mdff check -ccc -map 4ake-target_autopsf.dx -res 1.8 waitfor -1 -cccfile all.cc.dat']
+                        'mdff check -ccc -map 4ake-target_autopsf.dx -res {} waitfor -1 -cccfile all.cc.dat'.format(resolution)]
 
     task7.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
@@ -322,9 +323,9 @@ def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
                          'package require mdff',
                          'set selall [atomselect 0 "all"]',
                          '$selall frame 0',
-                         'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 1.8]',
+                         'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
                          '$selall frame last',
-                         'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res 1.8]',
+                         'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
                          'lappend cc $lcc $fcc',
                          'set outfile [open $outfilename w]',
                          'puts $outfile "$cc"']
