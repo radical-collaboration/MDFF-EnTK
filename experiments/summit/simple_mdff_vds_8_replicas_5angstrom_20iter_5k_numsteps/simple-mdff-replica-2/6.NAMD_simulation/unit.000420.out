@@ -1,0 +1,663 @@
+2_5_cc.dat
+/gpfs/alpine/bip115/scratch/hrlee/radical.pilot.sandbox/re.session.login1.hrlee.018625.0000/pilot.0000/staging_area/2_5_cc.dat
+2, 5
+Charm++> Running on MPI version: 3.1
+Charm++> level of thread support used: MPI_THREAD_FUNNELED (desired: MPI_THREAD_FUNNELED)
+Charm++> Running in SMP mode: 41 processes, 4 worker threads (PEs) + 1 comm threads per process, 164 PEs total
+Charm++> The comm. thread both sends and receives messages
+Charm++> Using recursive bisection (scheme 3) for topology aware partitions
+Converse/Charm++ Commit ID: v6.10.2-0-g7bf00fa-namd-charm-6.10.2-build-2020-Aug-05-556
+Warning> Randomization of virtual memory (ASLR) is turned on in the kernel, thread migration may not work! Run 'echo 0 > /proc/sys/kernel/randomize_va_space' as root to disable it, or try running with '+isomalloc_sync'.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 1 hosts (1 sockets x 1 cores x 4 PUs = 4-way SMP)
+Charm++> cpu topology info is gathered in 0.032 seconds.
+
+Charm++> Warning: the number of SMP threads (205) is greater than the number of physical cores (176), so threads will sleep while idling. Use +CmiSpinOnIdle or +CmiSleepOnIdle to control this directly.
+
+Info: NAMD 2.14 for Linux-POWER-MPI-smp-Summit
+Info: 
+Info: Please visit http://www.ks.uiuc.edu/Research/namd/
+Info: for updates, documentation, and support information.
+Info: 
+Info: Please cite Phillips et al., J. Chem. Phys. 153:044130 (2020) doi:10.1063/5.0014475
+Info: in all publications reporting results obtained with NAMD.
+Info: 
+Info: Based on Charm++/Converse 61002 for mpi-linux-ppc64le-smp
+Info: Built Wed Aug 5 14:25:51 EDT 2020 by jimp on login2
+Info: 1 NAMD  2.14  Linux-POWER-MPI-smp-Summit  164    d21n08  hrlee
+Info: Running on 164 processors, 41 nodes, 1 physical nodes.
+Info: CPU topology information available.
+Info: Charm++/Converse parallel runtime startup completed at 0.0390969 s
+CkLoopLib is used in SMP with simple dynamic scheduling (converse-level notification)
+Info: 957.5 MB of memory in use based on /proc/self/stat
+Info: Configuration file is adk-step1.namd
+Info: Working in the current directory /gpfs/alpine/bip115/scratch/hrlee/radical.pilot.sandbox/re.session.login1.hrlee.018625.0000/pilot.0000/unit.000420
+TCL: Suspending until startup complete.
+Info: SIMULATION PARAMETERS:
+Info: TIMESTEP               1
+Info: NUMBER OF STEPS        0
+Info: STEPS PER CYCLE        20
+Info: LOAD BALANCER  Centralized
+Info: LOAD BALANCING STRATEGY  New Load Balancers -- DEFAULT
+Info: LDB PERIOD             4000 steps
+Info: FIRST LDB TIMESTEP     100
+Info: LAST LDB TIMESTEP     -1
+Info: LDB BACKGROUND SCALING 1
+Info: HOM BACKGROUND SCALING 1
+Info: REMOVING LOAD FROM NODE 0
+Info: REMOVING PATCHES FROM PROCESSOR 0
+Info: MIN ATOMS PER PATCH    40
+Info: VELOCITY FILE          2_5_adk-step1.restart.vel
+Info: CENTER OF MASS MOVING INITIALLY? NO
+Info: DIELECTRIC             80
+Info: EXCLUDE                SCALED ONE-FOUR
+Info: 1-4 ELECTROSTATICS SCALED BY 1
+Info: MODIFIED 1-4 VDW PARAMETERS WILL BE USED
+Info: DCD FILENAME           adk-step1.dcd
+Info: DCD FREQUENCY          1000
+Info: DCD FIRST STEP         1000
+Info: NO EXTENDED SYSTEM TRAJECTORY OUTPUT
+Info: NO VELOCITY DCD OUTPUT
+Info: NO FORCE DCD OUTPUT
+Info: OUTPUT FILENAME        adk-step1
+Info: BINARY OUTPUT FILES WILL BE USED
+Info: RESTART FILENAME       adk-step1.restart
+Info: RESTART FREQUENCY      1000
+Info: BINARY RESTART FILES WILL BE USED
+Info: SWITCHING ACTIVE
+Info: SWITCHING ON           9
+Info: SWITCHING OFF          10
+Info: PAIRLIST DISTANCE      11
+Info: PAIRLIST SHRINK RATE   0.01
+Info: PAIRLIST GROW RATE     0.01
+Info: PAIRLIST TRIGGER       0.3
+Info: PAIRLISTS PER CYCLE    2
+Info: PAIRLISTS ENABLED
+Info: MARGIN                 0
+Info: HYDROGEN GROUP CUTOFF  2.5
+Info: PATCH DIMENSION        13.5
+Info: ENERGY OUTPUT STEPS    100
+Info: CROSSTERM ENERGY INCLUDED IN DIHEDRAL
+Info: TIMING OUTPUT STEPS    1000
+Info: PRESSURE OUTPUT STEPS  100
+Info: GRID FORCE ACTIVE
+Info:  Please include this reference in published work using
+Info:  the Gridforce module of NAMD: David Wells, Volha Abramkina,
+Info:  and Aleksei Aksimentiev, J. Chem. Phys. 127:125101-10 (2007).
+Info: MGRIDFORCE key 0
+Info:            Potfile 4ake-target_autopsf-grid.dx
+Info:            Scale 0.3 0.3 0.3
+Info:            File 1ake-docked-noh_autopsf-grid.pdb
+Info:            Col O
+Info:            ChargeCol B
+Info:            VOffset 0 0 0
+Info:            Continuous K1 FALSE
+Info:            Continuous K2 FALSE
+Info:            Continuous K3 FALSE
+Info:            Volts FALSE
+Info:            Gridforce-Lite FALSE
+Info:            Gridforce-CheckSize TRUE
+Info: LANGEVIN DYNAMICS ACTIVE
+Info: LANGEVIN TEMPERATURE   300
+Info: LANGEVIN USING BBK INTEGRATOR
+Info: LANGEVIN DAMPING COEFFICIENT IS 5 INVERSE PS
+Info: LANGEVIN DYNAMICS NOT APPLIED TO HYDROGENS
+Info: USING VERLET I (r-RESPA) MTS SCHEME.
+Info: C1 SPLITTING OF LONG RANGE ELECTROSTATICS
+Info: PLACING ATOMS IN PATCHES BY HYDROGEN GROUPS
+Info: RIGID BONDS TO HYDROGEN : WATER
+Info:         ERROR TOLERANCE : 1e-08
+Info:          MAX ITERATIONS : 100
+Info: RIGID WATER USING SETTLE ALGORITHM
+Info: NONBONDED FORCES EVALUATED EVERY 2 STEPS
+Info: RANDOM NUMBER SEED     1609226308
+Info: USE HYDROGEN BONDS?    NO
+Info: COORDINATE PDB         1ake-docked-noh_autopsf.pdb
+Info: STRUCTURE FILE         1ake-docked-noh_autopsf.psf
+Info: PARAMETER file: CHARMM format! 
+Info: PARAMETERS             par_all36_prot.prm
+Info: USING ARITHMETIC MEAN TO COMBINE L-J SIGMA PARAMETERS
+Info: BINARY COORDINATES     2_5_adk-step1.restart.coor
+Info: SUMMARY OF PARAMETERS:
+Info: 132 BONDS
+Info: 362 ANGLES
+Info: 702 DIHEDRAL
+Info: 35 IMPROPER
+Info: 6 CROSSTERM
+Info: 53 VDW
+Info: 0 VDW_PAIRS
+Info: 0 NBTHOLE_PAIRS
+Info: TIME FOR READING PSF FILE: 0.62203
+Info: READING EXTRA BONDS FILE 1ake-extrabonds.txt
+Info: READING EXTRA BONDS FILE 1ake-extrabonds-cispeptide.txt
+Info: READING EXTRA BONDS FILE 1ake-extrabonds-chirality.txt
+Info: READ 80 EXTRA BONDS
+Info: READ 80 EXTRA ANGLES
+Warning: EXTRA ANGLES ARE COSINE-BASED BY DEFAULT TO MATCH PREVIOUS VERSIONS
+Warning: FOR NORMAL HARMONIC EXTRA ANGLES SET extraBondsCosAngles off
+Info: READ 493 EXTRA DIHEDRALS
+Info: READ 438 EXTRA IMPROPERS
+Info: Reading pdb file 1ake-docked-noh_autopsf.pdb
+Info: TIME FOR READING PDB FILE: 0.0557427
+Info: 
+Info: ****************************
+Info: STRUCTURE SUMMARY:
+Info: 3341 ATOMS
+Info: 3445 BONDS
+Info: 6203 ANGLES
+Info: 9414 DIHEDRALS
+Info: 1005 IMPROPERS
+Info: 212 CROSSTERMS
+Info: 0 EXCLUSIONS
+Info: 0 RIGID BONDS
+Info: 1 GRIDS ACTIVE
+Info: 10023 DEGREES OF FREEDOM
+Info: 1656 HYDROGEN GROUPS
+Info: 4 ATOMS IN LARGEST HYDROGEN GROUP
+Info: 1656 MIGRATION GROUPS
+Info: 4 ATOMS IN LARGEST MIGRATION GROUP
+Info: TOTAL MASS = 23582 amu
+Info: TOTAL CHARGE = -4 e
+Info: *****************************
+Info: Reading from binary file 2_5_adk-step1.restart.coor
+Info: 
+Info: Entering startup at 1.47826 s, 1066.25 MB of memory in use
+Info: Startup phase 0 took 0.00079097 s, 1066.25 MB of memory in use
+Info: ADDED 18308 IMPLICIT EXCLUSIONS
+Info: Startup phase 1 took 0.0156275 s, 1066.25 MB of memory in use
+Info: NONBONDED TABLE R-SQUARED SPACING: 0.0625
+Info: NONBONDED TABLE SIZE: 705 POINTS
+Info: ABSOLUTE IMPRECISION IN FAST TABLE ENERGY: 3.38813e-21 AT 9.89634
+Info: RELATIVE IMPRECISION IN FAST TABLE ENERGY: 4.23384e-15 AT 9.94673
+Info: ABSOLUTE IMPRECISION IN FAST TABLE FORCE: 6.35275e-22 AT 9.94673
+Info: RELATIVE IMPRECISION IN FAST TABLE FORCE: 5.07982e-16 AT 9.94673
+Info: INCONSISTENCY IN FAST TABLE ENERGY VS FORCE: 0.000290185 AT 0.251946
+Info: ABSOLUTE IMPRECISION IN VDWA TABLE ENERGY: 1.57772e-30 AT 9.89634
+Info: RELATIVE IMPRECISION IN VDWA TABLE ENERGY: 4.54938e-15 AT 9.94673
+Info: ABSOLUTE IMPRECISION IN VDWA TABLE FORCE: 5.91646e-31 AT 9.94673
+Info: RELATIVE IMPRECISION IN VDWA TABLE FORCE: 5.6823e-16 AT 9.94673
+Info: INCONSISTENCY IN VDWA TABLE ENERGY VS FORCE: 0.0040507 AT 0.251946
+Info: ABSOLUTE IMPRECISION IN VDWB TABLE ENERGY: 4.71751e-25 AT 9.94673
+Info: RELATIVE IMPRECISION IN VDWB TABLE ENERGY: 1.45371e-14 AT 9.94673
+Info: ABSOLUTE IMPRECISION IN VDWB TABLE FORCE: 6.20385e-25 AT 9.94673
+Info: RELATIVE IMPRECISION IN VDWB TABLE FORCE: 5.97512e-16 AT 9.94673
+Info: INCONSISTENCY IN VDWB TABLE ENERGY VS FORCE: 0.00377068 AT 9.07951
+Info: Startup phase 2 took 0.00184652 s, 1066.25 MB of memory in use
+Info: Startup phase 3 took 0.000648013 s, 1066.25 MB of memory in use
+Info: Startup phase 4 took 0.000581538 s, 1066.25 MB of memory in use
+Info: Startup phase 5 took 0.000538184 s, 1066.25 MB of memory in use
+Info: ORIGINAL ATOMS MINMAX IS -20.6349 -33.59 -38.1726  16.8293 22.9802 17.5956
+Info: ADJUSTED ATOMS MINMAX IS -15.8014 -28.0601 -32.6643  11.3757 15.6613 9.23425
+Info: PATCH GRID IS 5 BY 4 BY 4
+Info: PATCH GRID IS 2-AWAY BY 1-AWAY BY 1-AWAY
+Info: Reading from binary file 2_5_adk-step1.restart.vel
+Info: REMOVING COM VELOCITY -0.0403412 0.103139 -0.148526
+Info: LARGEST PATCH (16) HAS 134 ATOMS
+Info: TORUS A SIZE 1 USING 0
+Info: TORUS B SIZE 1 USING 0
+Info: TORUS C SIZE 1 USING 0
+Info: TORUS MINIMAL MESH SIZE IS 1 BY 1 BY 1
+Info: Placed 100% of base nodes on same physical node as patch
+Info: Startup phase 6 took 0.0102828 s, 1066.25 MB of memory in use
+Info: Startup phase 7 took 0.000588423 s, 1066.25 MB of memory in use
+Info: Startup phase 8 took 0.000592224 s, 1066.25 MB of memory in use
+Info: Startup phase 9 took 0.00117485 s, 1066.25 MB of memory in use
+Info: Startup phase 10 took 0.000567774 s, 1066.25 MB of memory in use
+Info: Startup phase 11 took 0.00105817 s, 1066.25 MB of memory in use
+LDB: Central LB being created...
+Info: Startup phase 12 took 0.00419861 s, 1066.25 MB of memory in use
+Info: CREATING 1870 COMPUTE OBJECTS
+Info: Startup phase 13 took 0.00105531 s, 1066.25 MB of memory in use
+Info: Building spanning tree ... send: 1 recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+Info: Startup phase 14 took 0.000857393 s, 1066.25 MB of memory in use
+Info: Startup phase 15 took 0.000177808 s, 1066.25 MB of memory in use
+Info: Finished startup at 1.51885 s, 1066.25 MB of memory in use
+
+TCL: Running for 5000 steps
+PRESSURE: 0 0 0 0 0 0 0 0 0 0
+GPRESSURE: 0 0 0 0 0 0 0 0 0 0
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:       0      1096.9392      1717.0064      2107.8410       144.8792            -41.6001      -797.2355         0.0000      2475.7724      2940.9089           9644.5115       295.3073      6703.6026      9669.2195       295.3073
+
+LDB: ============= START OF LOAD BALANCING ============== 1.54777
+LDB: ============== END OF LOAD BALANCING =============== 1.54796
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 1.54855
+LDB: ============= START OF LOAD BALANCING ============== 1.65253
+LDB: 302 computes have load of zero
+LDB: Largest compute 451 load 0.011333 is 63.6% of average load 0.017815
+LDB: Average compute 0.001001 is 5.6% of average load 0.017815
+LDB: Partitioning computes with target load 0.002001
+LDB: Increased migratable compute count from 1088 to 1303
+LDB: Largest unpartitionable compute is 0.006329
+LDB: ============== END OF LOAD BALANCING =============== 1.65506
+Info: build node-aware spanning tree with send: 1, recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 1.65938
+PRESSURE: 100 0 0 0 0 0 0 0 0 0
+GPRESSURE: 100 0 0 0 0 0 0 0 0 0
+PRESSAVG: 100 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 100 0 0 0 0 0 0 0 0 0
+Info: Initial time: 164 CPUs 0.00124934 s/step 0.0144599 days/ns 1066.25 MB memory
+ENERGY:     100      1085.0560      1681.9489      2078.9772       153.6864            -41.7920      -791.0749         0.0000      2472.1320      3026.0338           9664.9674       303.8550      6638.9337      9691.5671       301.1931
+
+LDB: ============= START OF LOAD BALANCING ============== 1.68063
+LDB: ============== END OF LOAD BALANCING =============== 1.68081
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 1.68136
+LDB: ============= START OF LOAD BALANCING ============== 1.78991
+LDB: 302 computes have load of zero
+LDB: Largest compute 1596 load 0.006181 is 34.4% of average load 0.017969
+LDB: Average compute 0.000855 is 4.8% of average load 0.017969
+LDB: TIME 1.79828 LOAD: AVG 0.0179688 MAX 0.0539526  PROXIES: TOTAL 601 MAXPE 12 MAXPATCH 10 None MEM: 1066.25 MB
+LDB: TIME 1.80168 LOAD: AVG 0.0179688 MAX 0.0265865  PROXIES: TOTAL 969 MAXPE 15 MAXPATCH 34 TorusLB MEM: 1066.25 MB
+LDB: ============== END OF LOAD BALANCING =============== 1.80548
+Info: build node-aware spanning tree with send: 1, recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 1.81023
+PRESSURE: 200 0 0 0 0 0 0 0 0 0
+GPRESSURE: 200 0 0 0 0 0 0 0 0 0
+PRESSAVG: 200 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 200 0 0 0 0 0 0 0 0 0
+Info: Initial time: 164 CPUs 0.00134512 s/step 0.0155685 days/ns 1066.25 MB memory
+ENERGY:     200      1118.5720      1693.8831      2100.4832       160.9590            -40.9472      -789.6152         0.0000      2467.5425      2932.9765           9643.8538       294.5108      6710.8773      9665.2916       298.8494
+
+LDB: ============= START OF LOAD BALANCING ============== 1.9197
+LDB: 285 computes have load of zero
+LDB: Largest compute 1566 load 0.008738 is 31.0% of average load 0.028182
+LDB: Average compute 0.001125 is 4.0% of average load 0.028182
+LDB: TIME 1.92209 LOAD: AVG 0.028182 MAX 0.0503495  PROXIES: TOTAL 601 MAXPE 12 MAXPATCH 10 None MEM: 1066.25 MB
+LDB: TIME 1.92286 LOAD: AVG 0.028182 MAX 0.0503495  PROXIES: TOTAL 973 MAXPE 15 MAXPATCH 34 RefineTorusLB MEM: 1066.25 MB
+LDB: TIME 1.93564 LOAD: AVG 0.028182 MAX 0.0386501  PROXIES: TOTAL 907 MAXPE 13 MAXPATCH 28 RefineTorusLB MEM: 1066.25 MB
+LDB: ============== END OF LOAD BALANCING =============== 1.93701
+Info: build node-aware spanning tree with send: 1, recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 1.94323
+PRESSURE: 300 0 0 0 0 0 0 0 0 0
+GPRESSURE: 300 0 0 0 0 0 0 0 0 0
+PRESSAVG: 300 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 300 0 0 0 0 0 0 0 0 0
+Info: Initial time: 164 CPUs 0.0010283 s/step 0.0119017 days/ns 1066.25 MB memory
+ENERGY:     300      1083.0780      1679.0337      2057.4061       150.1837            -42.1531      -801.6279         0.0000      2464.4666      3003.7889           9594.1759       301.6213      6590.3871      9618.6107       298.9993
+
+LDB: ============= START OF LOAD BALANCING ============== 2.04737
+LDB: 302 computes have load of zero
+LDB: Largest compute 1566 load 0.009281 is 33.8% of average load 0.027428
+LDB: Average compute 0.001135 is 4.1% of average load 0.027428
+LDB: TIME 2.04961 LOAD: AVG 0.0274284 MAX 0.0441855  PROXIES: TOTAL 601 MAXPE 12 MAXPATCH 10 None MEM: 1066.25 MB
+LDB: TIME 2.05033 LOAD: AVG 0.0274284 MAX 0.0441855  PROXIES: TOTAL 904 MAXPE 13 MAXPATCH 28 RefineTorusLB MEM: 1066.25 MB
+LDB: TIME 2.05659 LOAD: AVG 0.0274284 MAX 0.0356104  PROXIES: TOTAL 908 MAXPE 13 MAXPATCH 28 RefineTorusLB MEM: 1066.25 MB
+LDB: ============== END OF LOAD BALANCING =============== 2.0578
+Info: build node-aware spanning tree with send: 1, recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 2.06192
+PRESSURE: 400 0 0 0 0 0 0 0 0 0
+GPRESSURE: 400 0 0 0 0 0 0 0 0 0
+PRESSAVG: 400 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 400 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.00103805 s/step 0.0120145 days/ns 1066.25 MB memory
+ENERGY:     400      1121.9927      1660.4750      2082.3729       157.7378            -41.6561      -777.8994         0.0000      2459.2312      2910.4889           9572.7430       292.2527      6662.2541      9599.0115       298.1768
+
+PRESSURE: 500 0 0 0 0 0 0 0 0 0
+GPRESSURE: 500 0 0 0 0 0 0 0 0 0
+PRESSAVG: 500 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 500 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.00107097 s/step 0.0123955 days/ns 1066.25 MB memory
+ENERGY:     500      1114.7455      1631.4538      2084.9012       148.0989            -41.7189      -813.8155         0.0000      2472.0150      2977.7603           9573.4403       299.0077      6595.6800      9596.6480       296.2787
+
+PRESSURE: 600 0 0 0 0 0 0 0 0 0
+GPRESSURE: 600 0 0 0 0 0 0 0 0 0
+PRESSAVG: 600 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 600 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.0012642 s/step 0.0146319 days/ns 1066.25 MB memory
+ENERGY:     600      1067.2769      1692.0345      2091.2935       172.4817            -41.4558      -852.1598         0.0000      2475.3254      2989.8786           9594.6749       300.2245      6604.7963      9619.8673       297.3679
+
+PRESSURE: 700 0 0 0 0 0 0 0 0 0
+GPRESSURE: 700 0 0 0 0 0 0 0 0 0
+PRESSAVG: 700 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 700 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.00111113 s/step 0.0128602 days/ns 1066.25 MB memory
+ENERGY:     700      1105.3589      1662.8064      2082.7608       138.9989            -40.9382      -796.2647         0.0000      2470.6202      2987.6347           9610.9769       299.9992      6623.3422      9638.3404       299.3900
+
+PRESSURE: 800 0 0 0 0 0 0 0 0 0
+GPRESSURE: 800 0 0 0 0 0 0 0 0 0
+PRESSAVG: 800 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 800 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.00109698 s/step 0.0126966 days/ns 1066.25 MB memory
+ENERGY:     800      1065.4762      1673.1618      2102.5587       150.3063            -40.8262      -819.1703         0.0000      2472.5583      3038.9455           9643.0103       305.1515      6604.0648      9668.8291       299.9422
+
+PRESSURE: 900 0 0 0 0 0 0 0 0 0
+GPRESSURE: 900 0 0 0 0 0 0 0 0 0
+PRESSAVG: 900 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 900 0 0 0 0 0 0 0 0 0
+Info: Benchmark time: 164 CPUs 0.00123626 s/step 0.0143085 days/ns 1066.25 MB memory
+ENERGY:     900      1069.7906      1708.7890      2100.5067       153.8588            -40.5525      -810.0200         0.0000      2483.1426      2965.7025           9631.2178       297.7969      6665.5153      9654.9972       299.6675
+
+OPENING COORDINATE DCD FILE
+WRITING COORDINATES TO DCD FILE adk-step1.dcd AT STEP 1000
+WRITING COORDINATES TO RESTART FILE AT STEP 1000
+FINISHED WRITING RESTART COORDINATES
+The last position output (seq=1000) takes 0.008 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO RESTART FILE AT STEP 1000
+FINISHED WRITING RESTART VELOCITIES
+The last velocity output (seq=1000) takes 0.002 seconds, 1066.250 MB of memory in use
+PRESSURE: 1000 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1000 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1000 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1000 0 0 0 0 0 0 0 0 0
+TIMING: 1000  CPU: 0.294079, 0.000291481/step  Wall: 1.24199, 0.00122867/step, 0.00136518 hours remaining, 1066.250000 MB of memory in use.
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:    1000      1071.0640      1740.9768      2069.4929       156.4034            -40.7787      -827.4603         0.0000      2486.7237      3008.7720           9665.1937       302.1217      6656.4217      9687.5300       298.8293
+
+WRITING EXTENDED SYSTEM TO RESTART FILE AT STEP 1000
+PRESSURE: 1100 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1100 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1100 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1100 0 0 0 0 0 0 0 0 0
+ENERGY:    1100      1047.3409      1700.7110      2107.0940       145.7977            -41.4000      -785.2361         0.0000      2480.2923      3003.5312           9658.1311       301.5955      6654.5999      9686.2240       301.5424
+
+PRESSURE: 1200 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1200 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1200 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1200 0 0 0 0 0 0 0 0 0
+ENERGY:    1200      1081.5072      1767.7675      2092.4346       151.2369            -41.4535      -819.9664         0.0000      2473.2393      3035.4824           9740.2479       304.8038      6704.7656      9768.7797       301.9789
+
+PRESSURE: 1300 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1300 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1300 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1300 0 0 0 0 0 0 0 0 0
+ENERGY:    1300      1108.4781      1727.0705      2084.4696       158.7907            -42.0611      -787.5018         0.0000      2460.7426      3019.9676           9729.9563       303.2459      6709.9887      9751.0952       305.7497
+
+PRESSURE: 1400 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1400 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1400 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1400 0 0 0 0 0 0 0 0 0
+ENERGY:    1400      1100.6732      1668.5609      2075.0980       158.4904            -41.7932      -792.4062         0.0000      2465.8095      3001.9547           9636.3873       301.4372      6634.4326      9662.9086       303.2479
+
+PRESSURE: 1500 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1500 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1500 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1500 0 0 0 0 0 0 0 0 0
+ENERGY:    1500      1094.8650      1714.7480      2079.0491       154.4911            -41.9920      -815.7704         0.0000      2471.9144      2970.8858           9628.1909       298.3174      6657.3051      9654.5309       298.9956
+
+PRESSURE: 1600 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1600 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1600 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1600 0 0 0 0 0 0 0 0 0
+ENERGY:    1600      1134.8147      1696.4171      2076.2238       145.5531            -41.8792      -821.1027         0.0000      2476.0761      3008.5764           9674.6793       302.1021      6666.1030      9697.4954       300.5570
+
+PRESSURE: 1700 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1700 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1700 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1700 0 0 0 0 0 0 0 0 0
+ENERGY:    1700      1073.2310      1731.2517      2082.1235       148.8363            -41.0710      -781.1524         0.0000      2461.0268      3012.0886           9686.3345       302.4547      6674.2459      9709.2042       301.4885
+
+PRESSURE: 1800 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1800 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1800 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1800 0 0 0 0 0 0 0 0 0
+ENERGY:    1800      1082.3386      1650.8800      2093.0482       154.3392            -40.9414      -777.4053         0.0000      2463.9408      2979.9523           9606.1523       299.2278      6626.2000      9632.7720       301.4305
+
+PRESSURE: 1900 0 0 0 0 0 0 0 0 0
+GPRESSURE: 1900 0 0 0 0 0 0 0 0 0
+PRESSAVG: 1900 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 1900 0 0 0 0 0 0 0 0 0
+ENERGY:    1900      1062.2717      1632.2419      2091.6245       150.8012            -41.1140      -764.0737         0.0000      2464.6841      3001.9532           9598.3889       301.4370      6596.4357      9619.6857       298.0967
+
+WRITING COORDINATES TO DCD FILE adk-step1.dcd AT STEP 2000
+WRITING COORDINATES TO RESTART FILE AT STEP 2000
+FINISHED WRITING RESTART COORDINATES
+The last position output (seq=2000) takes 0.004 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO RESTART FILE AT STEP 2000
+FINISHED WRITING RESTART VELOCITIES
+The last velocity output (seq=2000) takes 0.002 seconds, 1066.250 MB of memory in use
+PRESSURE: 2000 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2000 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2000 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2000 0 0 0 0 0 0 0 0 0
+TIMING: 2000  CPU: 0.525486, 0.000231407/step  Wall: 2.63014, 0.00138815/step, 0.00115679 hours remaining, 1066.250000 MB of memory in use.
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:    2000      1085.1032      1691.8388      2077.7601       151.9175            -40.9748      -799.5056         0.0000      2469.2375      2991.0543           9626.4310       300.3426      6635.3767      9649.0241       299.4019
+
+WRITING EXTENDED SYSTEM TO RESTART FILE AT STEP 2000
+PRESSURE: 2100 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2100 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2100 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2100 0 0 0 0 0 0 0 0 0
+ENERGY:    2100      1087.2655      1689.1305      2100.5348       148.1639            -40.2704      -800.1691         0.0000      2464.6944      2974.9303           9624.2799       298.7235      6649.3496      9648.4289       298.4397
+
+PRESSURE: 2200 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2200 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2200 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2200 0 0 0 0 0 0 0 0 0
+ENERGY:    2200      1065.3031      1687.6093      2039.9688       150.0827            -41.4856      -784.3361         0.0000      2460.6285      3020.4701           9598.2408       303.2964      6577.7707      9625.3729       297.4613
+
+PRESSURE: 2300 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2300 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2300 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2300 0 0 0 0 0 0 0 0 0
+ENERGY:    2300      1089.7764      1706.3743      2111.5938       154.2964            -41.8140      -777.6074         0.0000      2454.0631      2991.6729           9688.3555       300.4047      6696.6825      9712.2079       300.0378
+
+PRESSURE: 2400 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2400 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2400 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2400 0 0 0 0 0 0 0 0 0
+ENERGY:    2400      1111.5988      1705.8775      2093.5476       178.5418            -40.0917      -833.6266         0.0000      2459.8100      3039.5085           9715.1660       305.2081      6675.6575      9739.4848       302.7477
+
+PRESSURE: 2500 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2500 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2500 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2500 0 0 0 0 0 0 0 0 0
+ENERGY:    2500      1101.1451      1648.7447      2099.4536       159.0917            -40.7642      -780.5553         0.0000      2460.7170      3013.0137           9660.8463       302.5476      6647.8326      9687.3721       302.4690
+
+PRESSURE: 2600 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2600 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2600 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2600 0 0 0 0 0 0 0 0 0
+ENERGY:    2600      1069.4453      1689.0024      2071.8960       142.6334            -41.0545      -803.9305         0.0000      2465.5036      2997.7987           9591.2942       301.0198      6593.4955      9617.1509       298.5514
+
+PRESSURE: 2700 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2700 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2700 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2700 0 0 0 0 0 0 0 0 0
+ENERGY:    2700      1099.2775      1712.2024      2069.9378       145.1001            -41.3170      -781.5025         0.0000      2462.0130      2940.2242           9605.9354       295.2386      6665.7112      9629.7935       297.3945
+
+PRESSURE: 2800 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2800 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2800 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2800 0 0 0 0 0 0 0 0 0
+ENERGY:    2800      1075.0475      1665.3218      2081.2854       155.5189            -42.3927      -783.5310         0.0000      2455.6784      2976.2144           9583.1427       298.8525      6606.9283      9606.1855       299.5127
+
+PRESSURE: 2900 0 0 0 0 0 0 0 0 0
+GPRESSURE: 2900 0 0 0 0 0 0 0 0 0
+PRESSAVG: 2900 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 2900 0 0 0 0 0 0 0 0 0
+ENERGY:    2900      1113.6354      1666.8801      2093.1404       140.4827            -41.4176      -796.7404         0.0000      2452.6514      2926.8355           9555.4676       293.8942      6628.6321      9576.6884       296.9563
+
+WRITING COORDINATES TO DCD FILE adk-step1.dcd AT STEP 3000
+WRITING COORDINATES TO RESTART FILE AT STEP 3000
+FINISHED WRITING RESTART COORDINATES
+The last position output (seq=3000) takes 0.004 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO RESTART FILE AT STEP 3000
+FINISHED WRITING RESTART VELOCITIES
+The last velocity output (seq=3000) takes 0.002 seconds, 1066.250 MB of memory in use
+PRESSURE: 3000 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3000 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3000 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3000 0 0 0 0 0 0 0 0 0
+TIMING: 3000  CPU: 0.75693, 0.000231444/step  Wall: 3.84163, 0.00121149/step, 0.000673049 hours remaining, 1066.250000 MB of memory in use.
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:    3000      1099.1153      1674.5835      2074.3726       167.3728            -41.6216      -833.2432         0.0000      2452.7303      2948.5873           9541.8971       296.0783      6593.3098      9566.3436       296.3789
+
+WRITING EXTENDED SYSTEM TO RESTART FILE AT STEP 3000
+PRESSURE: 3100 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3100 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3100 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3100 0 0 0 0 0 0 0 0 0
+ENERGY:    3100      1065.9882      1692.5363      2101.4228       155.1600            -40.1673      -808.3856         0.0000      2443.4077      2956.8122           9566.7744       296.9042      6609.9622      9593.9621       295.4751
+
+PRESSURE: 3200 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3200 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3200 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3200 0 0 0 0 0 0 0 0 0
+ENERGY:    3200      1131.0418      1700.0370      2045.8264       154.7545            -40.1884      -803.9851         0.0000      2442.8638      2923.8508           9554.2007       293.5945      6630.3500      9575.5972       296.0489
+
+PRESSURE: 3300 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3300 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3300 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3300 0 0 0 0 0 0 0 0 0
+ENERGY:    3300      1110.5754      1714.3614      2084.2754       140.5715            -40.1724      -781.3637         0.0000      2437.7427      2929.7837           9595.7740       294.1902      6665.9903      9617.5170       297.8471
+
+PRESSURE: 3400 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3400 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3400 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3400 0 0 0 0 0 0 0 0 0
+ENERGY:    3400      1096.1328      1712.3474      2086.5098       161.8698            -39.9247      -839.7894         0.0000      2443.7032      3013.2110           9634.0597       302.5674      6620.8488      9659.9199       299.6425
+
+PRESSURE: 3500 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3500 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3500 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3500 0 0 0 0 0 0 0 0 0
+ENERGY:    3500      1103.0935      1688.9534      2104.6212       162.9411            -39.5884      -808.0864         0.0000      2446.1018      2957.2136           9615.2497       296.9445      6658.0362      9640.1217       300.4410
+
+PRESSURE: 3600 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3600 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3600 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3600 0 0 0 0 0 0 0 0 0
+ENERGY:    3600      1073.9950      1709.2772      2097.6449       146.2665            -39.4650      -791.7812         0.0000      2446.3433      3005.0545           9647.3353       301.7484      6642.2808      9673.4655       300.1702
+
+PRESSURE: 3700 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3700 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3700 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3700 0 0 0 0 0 0 0 0 0
+ENERGY:    3700      1141.7651      1704.1805      2077.4104       146.4764            -40.2476      -832.6887         0.0000      2446.8310      2989.2991           9633.0261       300.1664      6643.7270      9658.6656       300.0901
+
+PRESSURE: 3800 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3800 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3800 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3800 0 0 0 0 0 0 0 0 0
+ENERGY:    3800      1112.6789      1675.4887      2088.4191       166.9141            -39.8895      -804.5793         0.0000      2451.5098      3009.4838           9660.0258       302.1932      6650.5419      9679.1153       301.6455
+
+PRESSURE: 3900 0 0 0 0 0 0 0 0 0
+GPRESSURE: 3900 0 0 0 0 0 0 0 0 0
+PRESSAVG: 3900 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 3900 0 0 0 0 0 0 0 0 0
+ENERGY:    3900      1093.7846      1707.1464      2088.1619       159.7146            -40.5628      -806.2675         0.0000      2454.0393      3014.3039           9670.3204       302.6772      6656.0165      9696.8970       302.0798
+
+WRITING COORDINATES TO DCD FILE adk-step1.dcd AT STEP 4000
+WRITING COORDINATES TO RESTART FILE AT STEP 4000
+FINISHED WRITING RESTART COORDINATES
+The last position output (seq=4000) takes 0.004 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO RESTART FILE AT STEP 4000
+FINISHED WRITING RESTART VELOCITIES
+The last velocity output (seq=4000) takes 0.002 seconds, 1066.250 MB of memory in use
+PRESSURE: 4000 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4000 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4000 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4000 0 0 0 0 0 0 0 0 0
+TIMING: 4000  CPU: 0.986689, 0.000229759/step  Wall: 4.9304, 0.00108878/step, 0.000302438 hours remaining, 1066.250000 MB of memory in use.
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:    4000      1091.1515      1695.1076      2100.9546       162.5608            -40.3165      -830.3911         0.0000      2456.4686      3021.3732           9656.9086       303.3870      6635.5355      9684.1072       303.8304
+
+WRITING EXTENDED SYSTEM TO RESTART FILE AT STEP 4000
+PRESSURE: 4100 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4100 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4100 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4100 0 0 0 0 0 0 0 0 0
+ENERGY:    4100      1039.8330      1740.9342      2103.9631       149.9878            -41.2283      -810.7183         0.0000      2447.0263      3004.8054           9634.6031       301.7234      6629.7977      9661.2745       300.4740
+
+PRESSURE: 4200 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4200 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4200 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4200 0 0 0 0 0 0 0 0 0
+ENERGY:    4200      1115.5303      1720.3795      2084.0598       152.2142            -41.5400      -820.3188         0.0000      2444.5231      2974.3394           9629.1876       298.6642      6654.8482      9652.5841       301.0248
+
+LDB: ============= START OF LOAD BALANCING ============== 6.78544
+LDB: ============== END OF LOAD BALANCING =============== 6.78564
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 6.78626
+PRESSURE: 4300 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4300 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4300 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4300 0 0 0 0 0 0 0 0 0
+ENERGY:    4300      1048.3983      1700.5202      2107.2339       149.7142            -40.5437      -828.0375         0.0000      2447.5692      3013.5755           9598.4301       302.6040      6584.8546      9626.6634       300.3582
+
+LDB: ============= START OF LOAD BALANCING ============== 6.89121
+LDB: 314 computes have load of zero
+LDB: Largest compute 1566 load 0.008649 is 31.2% of average load 0.027737
+LDB: Average compute 0.001151 is 4.1% of average load 0.027737
+LDB: TIME 6.89362 LOAD: AVG 0.0277371 MAX 0.0371284  PROXIES: TOTAL 601 MAXPE 12 MAXPATCH 10 None MEM: 1066.25 MB
+LDB: TIME 6.89432 LOAD: AVG 0.0277371 MAX 0.0371284  PROXIES: TOTAL 907 MAXPE 13 MAXPATCH 28 RefineTorusLB MEM: 1066.25 MB
+LDB: TIME 6.89625 LOAD: AVG 0.0277371 MAX 0.0371284  PROXIES: TOTAL 894 MAXPE 13 MAXPATCH 27 RefineTorusLB MEM: 1066.25 MB
+LDB: ============== END OF LOAD BALANCING =============== 6.89732
+Info: build node-aware spanning tree with send: 1, recv: 0 with branch factor 4
+Info: useSync: 0 useProxySync: 0
+LDB: =============== DONE WITH MIGRATION ================ 6.90111
+PRESSURE: 4400 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4400 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4400 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4400 0 0 0 0 0 0 0 0 0
+ENERGY:    4400      1082.6133      1624.3848      2086.8068       153.1574            -40.0004      -765.7699         0.0000      2443.0771      2974.2135           9558.4826       298.6516      6584.2691      9583.7136       296.8171
+
+PRESSURE: 4500 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4500 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4500 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4500 0 0 0 0 0 0 0 0 0
+ENERGY:    4500      1083.3286      1702.5173      2088.8476       155.7243            -40.1571      -794.9165         0.0000      2444.1695      2942.1740           9581.6876       295.4344      6639.5136      9603.8714       295.7395
+
+PRESSURE: 4600 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4600 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4600 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4600 0 0 0 0 0 0 0 0 0
+ENERGY:    4600      1100.2723      1633.9269      2082.3470       153.4552            -40.7869      -795.1026         0.0000      2445.2126      2977.7757           9557.1002       299.0093      6579.3245      9581.4574       296.7337
+
+PRESSURE: 4700 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4700 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4700 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4700 0 0 0 0 0 0 0 0 0
+ENERGY:    4700      1113.5338      1701.8422      2075.7279       149.1886            -40.6716      -786.0537         0.0000      2442.0807      2939.9099           9595.5579       295.2070      6655.6480      9621.9758       296.4020
+
+PRESSURE: 4800 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4800 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4800 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4800 0 0 0 0 0 0 0 0 0
+ENERGY:    4800      1073.4400      1646.2255      2069.7034       158.8241            -41.3316      -803.9358         0.0000      2447.1793      3013.1055           9563.2104       302.5569      6550.1049      9589.9285       299.0284
+
+PRESSURE: 4900 0 0 0 0 0 0 0 0 0
+GPRESSURE: 4900 0 0 0 0 0 0 0 0 0
+PRESSAVG: 4900 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 4900 0 0 0 0 0 0 0 0 0
+ENERGY:    4900      1066.1412      1678.5029      2086.8204       147.2495            -40.4999      -816.3268         0.0000      2440.6452      2984.0163           9546.5489       299.6359      6562.5326      9568.6527       296.6750
+
+WRITING COORDINATES TO DCD FILE adk-step1.dcd AT STEP 5000
+WRITING COORDINATES TO RESTART FILE AT STEP 5000
+FINISHED WRITING RESTART COORDINATES
+The last position output (seq=5000) takes 0.003 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO RESTART FILE AT STEP 5000
+FINISHED WRITING RESTART VELOCITIES
+The last velocity output (seq=5000) takes 0.002 seconds, 1066.250 MB of memory in use
+PRESSURE: 5000 0 0 0 0 0 0 0 0 0
+GPRESSURE: 5000 0 0 0 0 0 0 0 0 0
+PRESSAVG: 5000 0 0 0 0 0 0 0 0 0
+GPRESSAVG: 5000 0 0 0 0 0 0 0 0 0
+TIMING: 5000  CPU: 1.22345, 0.000236763/step  Wall: 6.04349, 0.00111309/step, 0 hours remaining, 1066.250000 MB of memory in use.
+ETITLE:      TS           BOND          ANGLE          DIHED          IMPRP               ELECT            VDW       BOUNDARY           MISC        KINETIC               TOTAL           TEMP      POTENTIAL         TOTAL3        TEMPAVG
+
+ENERGY:    5000      1104.0526      1709.1447      2047.5213       156.1130            -40.2776      -798.7647         0.0000      2434.0906      2916.4929           9528.3728       292.8556      6611.8799      9552.2194       294.6965
+
+WRITING EXTENDED SYSTEM TO RESTART FILE AT STEP 5000
+WRITING EXTENDED SYSTEM TO OUTPUT FILE AT STEP 5000
+WRITING COORDINATES TO OUTPUT FILE AT STEP 5000
+CLOSING COORDINATE DCD FILE adk-step1.dcd
+The last position output (seq=-2) takes 0.003 seconds, 1066.250 MB of memory in use
+WRITING VELOCITIES TO OUTPUT FILE AT STEP 5000
+====================================================
+
+WallClock: 7.566451  CPUTime: 2.336490  Memory: 1066.250000 MB
+[Partition 0][Node 0] End of program
