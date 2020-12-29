@@ -430,6 +430,9 @@ if __name__ == '__main__':
     if 'project' in resource_cfg[resource]:
         res_dict['project'] = resource_cfg[resource]['project']
 
+    if 'workflow_name' in workflow_cfg['global']:
+        res_dict['job_name'] = workflow_cfg['global']['workflow_name']
+
     # Assign resource manager to the Application Manager
     appman.resource_desc = res_dict
 
