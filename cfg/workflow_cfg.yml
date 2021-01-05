@@ -49,6 +49,7 @@ ornl_summit_debug_cuda:
         - 'module load fftw/3.3.8'
         - 'export LD_LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-5/spectrum-mpi-10.3.1.2-20200121-p6nrnt6vtvkn356wqg6f74n6jspnpjd2/lib/pami_port:$LD_LIBRARY_PATH'
         - 'export LD_PRELOAD=/opt/ibm/spectrum_mpi/lib/libpami_cudahook.so:$LD_PRELOAD'
+        - 'unset CUDA_VISIBLE_DEVICES'
     cpus: 160
   
   analysis:
