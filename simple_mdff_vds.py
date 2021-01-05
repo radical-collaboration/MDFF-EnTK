@@ -245,16 +245,16 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task6.executable = namd_path
     task6.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
     if resource[-4:] == "cuda":
-        gpus_per_ensemble = resource_cfg["gpu_per_node"] * resource_cfg["nodes"] // int(workflow_cfg['global']['ensemble_size'])
+        gpus_per_ensemble = resource_cfg["gpus_per_node"] * resource_cfg["nodes"] // int(workflow_cfg['global']['ensemble_size'])
  
         cmd_cat = "cat /dev/null"
         cmd_jsrun = "jsrun --bind rs" \
                 f" -n{gpus_per_ensemble}" \
                 f" -p{gpus_per_ensemble}" \
-                f" -r{resource_cfg['gpu_per_node']}" \
+                f" -r{resource_cfg['gpus_per_node']}" \
                 " -g1" \
-                " -c%s" % (resource_cfg["cpu_per_node"] //
-                        resource_cfg["gpu_per_node"])
+                " -c%s" % (resource_cfg["cpus_per_node"] //
+                        resource_cfg["gpus_per_node"])
         cmd_namd = namd_path
         task6.executable = ["%s; %s %s" % (cmd_cat, cmd_jsrun, cmd_namd)]
         task6.arguments = ['adk-step1.namd']
@@ -262,7 +262,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
         task6.cpu_reqs = {
                 "processes": gpus_per_ensemble,
                 "process_type": "MPI",
-                "threads_per_process": resource_cfg['gpu_per_node'] * sim_thread_cnt,
+                "threads_per_process": resource_cfg['gpus_per_node'] * sim_thread_cnt,
                 "thread_type": "OpenMP",
             }
         task6.gpu_reqs = {
