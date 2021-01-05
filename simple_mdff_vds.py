@@ -56,7 +56,7 @@ def get_pipelines(workflow_cfg, resource):
     return pipes
 
 
-def one_cycle(p, workflow_cfgs, resource, rep_idx, iter_idx):
+def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx):
 
     ## Simulation related parameters
     sim_pre_exec = workflow_cfg[resource]['simulation']['pre_exec'] or []
@@ -421,7 +421,9 @@ if __name__ == '__main__':
 
         'resource': resource_cfg[resource]['label'],
         'walltime': resource_cfg[resource]['walltime'],
-        'cpus': resource_cfg[resource]['cpus'] * workflow_cfg['global']['ensemble_size'],
+        'cpus': max(resource_cfg[resource].get('cpus', 1),
+            resource_cfg[resource].get('nodes', 1) *
+            resource_cfg[resource]['cpus_per_node']),
         'access_schema': resource_cfg[resource]['access_schema']
         }
     if 'queue' in resource_cfg[resource]:
