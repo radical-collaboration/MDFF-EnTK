@@ -34,7 +34,7 @@ def set_vmd_run(task, list_of_cmd, name=None):
     #task.arguments = [ '-eofexit', '<', fname ]
 
 
-def get_pipelines(workflow_cfg, resource):
+def get_pipelines(workflow_cfg, resource, resource_cfg):
 
     ## Extract resource-independent global parameters
     total_iters = workflow_cfg['global']['total_iters']
@@ -51,12 +51,12 @@ def get_pipelines(workflow_cfg, resource):
         p.name = 'simple-mdff-replica-%s' % rep_idx
 
         for iter_idx in range(total_iters):
-            one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx) # update pipeline, p 
+            one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg) # update pipeline, p 
         pipes.append(p)
     return pipes
 
 
-def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx):
+def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
 
     ## Simulation related parameters
     sim_pre_exec = workflow_cfg[resource]['simulation']['pre_exec'] or []
@@ -244,6 +244,35 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx):
     task6.pre_exec = sim_pre_exec.copy()
     task6.executable = namd_path
     task6.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
+    if resource[-4:] == "cuda":
+        gpus_per_ensemble = resource_cfg["gpu_per_node"] * resource_cfg["nodes"] // int(workflow_cfg['global']['ensemble_size'])
+ 
+        cmd_cat = "cat /dev/null"
+        cmd_jsrun = "jsrun --bind rs" \
+                f" -n{gpus_per_ensemble}" \
+                f" -p{gpus_per_ensemble}" \
+                f" -r{resource_cfg['gpu_per_node']}" \
+                " -g1" \
+                " -c%s" % (resource_cfg["cpu_per_node"] //
+                        resource_cfg["gpu_per_node"])
+        cmd_namd = namd_path
+        task6.executable = ["%s; %s %s" % (cmd_cat, cmd_jsrun, cmd_namd)]
+        task6.arguments = ['adk-step1.namd']
+        
+        task6.cpu_reqs = {
+                "processes": gpus_per_ensemble,
+                "process_type": "MPI",
+                "threads_per_process": resource_cfg['gpu_per_node'] * sim_thread_cnt,
+                "thread_type": "OpenMP",
+            }
+        task6.gpu_reqs = {
+                "processes": 1,
+                "process_type": None,
+                "threads_per_process": 1,
+                "thread_type": "CUDA",
+            }
+
+    
     task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'adk-step1.namd'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-docked-noh_autopsf.psf'),
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-docked-noh_autopsf.pdb'),
@@ -396,7 +425,7 @@ if __name__ == '__main__':
 
 
     # Create Pipeline
-    pipes = get_pipelines(workflow_cfg, resource)
+    pipes = get_pipelines(workflow_cfg, resource, resource_cfg)
 
 
     # configure mongodb
