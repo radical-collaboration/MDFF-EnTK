@@ -357,19 +357,6 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'processes': ana_process_cnt,
             'process_type': None,
             'thread_type': None}
-    task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
-    task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
-    task8_tcl_cmds += [ 'set outfilename cc.dat',
-                        'package require mdff',
-                        'set selall [atomselect 0 "all"]',
-                        '$selall frame 0',
-                        'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
-                        '$selall frame last',
-                        'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
-                        'lappend cc $lcc $fcc',
-                        'set outfile [open $outfilename w]',
-                        'puts $outfile "$cc"']
-
     if iter_idx != 0:
         task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
         task8_tcl_cmds += ['mol addfile adk-step1.restart.coor']         # first frame is now the restart coor file
@@ -384,6 +371,19 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
                              'lappend cc $lcc $fcc',
                              'set outfile [open $outfilename w]',
                              'puts $outfile "$cc"']
+    else:
+        task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
+        task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
+        task8_tcl_cmds += [ 'set outfilename cc.dat',
+                            'package require mdff',
+                            'set selall [atomselect 0 "all"]',
+                            '$selall frame 0',
+                            'set lcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
+                            '$selall frame last',
+                            'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
+                            'lappend cc $lcc $fcc',
+                            'set outfile [open $outfilename w]',
+                            'puts $outfile "$cc"']
 
     task8.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
