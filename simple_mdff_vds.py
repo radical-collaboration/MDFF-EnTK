@@ -331,7 +331,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     #                    'mdff check -ccc -map 4ake-target_autopsf.dx -res {} waitfor -1 -cccfile all.cc.dat'.format(resolution)]
     task7_tcl_cmds += ['set num_frames [molinfo top get numframes]']
     task7_tcl_cmds += ['set frame_indx [expr $num_frames - 1]']
-    task7_tcl_cmds += ['animate write pdb last_from_prev_iter.pdb beg $frame_indx end $frame_indx waitfor all']
+    task7_tcl_cmds += ['animate write pdb last.pdb beg $frame_indx end $frame_indx waitfor all']
 
     task7.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
@@ -409,7 +409,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             task6.name, 'adk-step1.restart.xsc')
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
-            task7.name, 'last_from_prev_iter.pdb')
+            task7.name, 'last.pdb')
         ]
     #task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
