@@ -346,6 +346,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     #task7.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
 
+    task7.copy_output_data = [
+            'last.pdb > $SHARED/{}_{}_last_from_prev_iter.pdb'.format(rep_idx, iter_idx)]
     set_vmd_run(task7, task7_tcl_cmds, "seventh_stage.tcl")
     seventh_stage.add_tasks(task7)
     p.add_stages(seventh_stage)
@@ -356,6 +358,17 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task8 = Task()
     task8.name = "task8"
     task8.pre_exec = ana_pre_exec.copy()
+    if iter_idx != 0 :
+        task8.pre_exec += ['export fpath=`grep -v "a" $RP_PILOT_STAGING/*_{}_cc.dat|sort -k2 -n -r|head -n1|cut -d":" -f1`'.format(iter_idx-1),
+                  'export fname=`basename $fpath`', 
+                  'echo $fname',
+                  'echo $fpath',
+                  'replica_id=`echo $fname|cut -d_ -f1`',
+                  'iter_id=`echo $fname|cut -d_ -f2`',
+                  'echo $replica_id, $iter_id',
+                  'cp $RP_PILOT_STAGING/${replica_id}_${iter_id}_last_from_prev_iter.pdb .',
+                  'ln -s ${replica_id}_${iter_id}_last_from_prev_iter.pdb last_from_prev_iter.pdb']
+     
     task8.cpu_reqs = {
             'threads_per_process': ana_thread_cnt,
             'processes': ana_process_cnt,
@@ -406,7 +419,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             task6.name, 'adk-step1.restart.vel'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.restart.xsc')
+            task6.name, 'adk-step1.restart.xsc'),
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
             task7.name, 'last.pdb')

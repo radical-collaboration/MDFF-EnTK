@@ -22,8 +22,18 @@ xsede_supermic:
 
 ornl_summit:
   label: 'ornl.summit'
-  walltime: 40
-  nodes: 1
+  walltime: 60
+  nodes: 8
+  queue: 'batch'
+  access_schema: 'local'
+  project: 'BIP115'
+  cpus_per_node: 168
+  gpus_per_node: 6
+
+ornl_summit_cuda:
+  label: 'ornl.summit'
+  walltime: 120
+  nodes: 8
   queue: 'batch'
   access_schema: 'local'
   project: 'BIP115'
