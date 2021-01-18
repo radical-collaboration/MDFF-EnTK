@@ -330,7 +330,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     #task7_tcl_cmds += [ 'package require mdff',
     #                    'mdff check -ccc -map 4ake-target_autopsf.dx -res {} waitfor -1 -cccfile all.cc.dat'.format(resolution)]
     task7_tcl_cmds += ['set num_frames [molinfo top get numframes]']
-    task7_tcl_cmds += ['set frame_indx [expr $n - 1]']
+    task7_tcl_cmds += ['set frame_indx [expr $num_frames - 1]']
     task7_tcl_cmds += ['animate write pdb last_from_prev_iter.pdb beg $frame_inex end $frame_inex waitfor all']
 
     task7.copy_input_data = [
