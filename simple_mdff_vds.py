@@ -315,7 +315,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     ## Analysis stages
 
     seventh_stage = Stage()
-    seventh_stage.name = 'Calculating the cross-correlation coefficient of full trajectory'
+    #seventh_stage.name = 'Calculating the cross-correlation coefficient of full trajectory'
+    seventh_stage.name = 'Saving the last frame of the trajectory as PDB file format'
     task7 = Task()
     task7.name = "task7"
     task7.pre_exec = ana_pre_exec.copy()
@@ -326,8 +327,11 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'thread_type': None}
     task7_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
     task7_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
-    task7_tcl_cmds += [ 'package require mdff',
-                        'mdff check -ccc -map 4ake-target_autopsf.dx -res {} waitfor -1 -cccfile all.cc.dat'.format(resolution)]
+    #task7_tcl_cmds += [ 'package require mdff',
+    #                    'mdff check -ccc -map 4ake-target_autopsf.dx -res {} waitfor -1 -cccfile all.cc.dat'.format(resolution)]
+    task7_tcl_cmds += ['set num_frames [molinfo top get numframes]']
+    task7_tcl_cmds += ['set frame_indx [expr $n - 1]']
+    task7_tcl_cmds += ['animate write pdb last_from_prev_iter.pdb beg $frame_inex end $frame_inex waitfor all']
 
     task7.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
@@ -359,7 +363,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'thread_type': None}
     if iter_idx != 0:
         task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
-        task8_tcl_cmds += ['mol addfile adk-step1.restart.coor']         # first frame is now the restart coor file
+        task8_tcl_cmds += ['mol addfile last_from_prev_iter.pdb']         # first frame is now the last_from_prev_iter
         task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
         task8_tcl_cmds += [ 'set outfilename cc.dat',
                              'package require mdff',
@@ -403,6 +407,9 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
 
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
             task6.name, 'adk-step1.restart.xsc')
+
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
+            task7.name, 'last_from_prev_iter.pdb')
         ]
     #task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
