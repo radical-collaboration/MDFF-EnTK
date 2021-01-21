@@ -515,3 +515,23 @@ if __name__ == '__main__':
 
     # Run the Application Manager
     appman.run()
+
+    f = open("{}.prog".format(appman.sid), "w")
+    cnt = 0
+    tot_iters_cnt = workflow_cfg['global']['total_iters']
+    for pipe in list(appman.workflow):
+        tot_stage_cnt = (len(pipe.stages))
+        iter_cnt = 1
+        last_stage_name_complete = ''
+        for stage in pipe.stages:
+            cnt += 1
+            #print("{},{},{},{}".format(pipe.name, stage.uid,
+            #    stage.name, stage.state))
+            last_stage_name_complete = stage.name if stage.state == "DONE" else last_stage_name_complete
+            if cnt % (tot_stage_cnt / tot_iters_cnt) == 0:
+                #print(f"iter_cnt:{iter_cnt}")
+                #print("==iter_index_{},{},{},{}".format(iter_cnt, pipe.name, "FINISHED" if stage.state == "DONE" else "UNFINISHED", last_stage_name_complete))
+                f.write("==iter_index_{},{},{}\n".format(iter_cnt, pipe.name, "FINISHED" if stage.state == "DONE" else "UNFINISHED"))
+                iter_cnt+=1
+
+    f.close()
