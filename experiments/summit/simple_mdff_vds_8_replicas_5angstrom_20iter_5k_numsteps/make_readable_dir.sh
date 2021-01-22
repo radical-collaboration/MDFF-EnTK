@@ -1,9 +1,21 @@
 #!/bin/bash
 
+filter=$1
 declare -A iter_cnt
 base_path="readable"
-for unit in `ls -d unit*`
+if [ "$filter" != "" ]
+then
+	cmd=$(find unit* -name "$filter" -exec dirname {} \;)
+else
+	cmd=$(ls -d unit*)
+fi
+for unit in $cmd
 do
+	if [ ! -d $unit ] || [ ! -f $unit/${unit}.sh ]
+	then
+		echo "skip..."$unit
+		continue
+	fi
 	rp_unit_name=`grep RP_UNIT_NAME $unit/unit*.sh|cut -d= -f2|tr -d '"'`
 	pipe_name=`echo "$rp_unit_name"|cut -d, -f6`
 	if [ ! ${iter_cnt[$pipe_name]} ]
