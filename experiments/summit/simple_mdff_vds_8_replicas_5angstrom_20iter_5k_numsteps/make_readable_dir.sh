@@ -36,6 +36,7 @@ do
 	fi
 	new_dir="$base_path/$pipe_name/${iter_cnt[$pipe_name]}.$stage_name"
 
-	cp -pr $unit $new_dir
+	mkdir $new_dir
+	cp -pr $unit/$filter $new_dir/
 	echo cp -pr $unit $new_dir
 done

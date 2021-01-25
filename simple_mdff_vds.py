@@ -387,7 +387,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
                              'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
                              'lappend cc $lcc $fcc',
                              'set outfile [open $outfilename w]',
-                             'puts $outfile "$cc"']
+                             'puts $outfile "$cc"',
+                             'close $outfile']
     else:
         task8_tcl_cmds = [ 'mol new 1ake-docked-noh_autopsf.psf' ]
         task8_tcl_cmds += [ 'mol addfile adk-step1.dcd waitfor all' ]    # load the full mdff trajectory
@@ -400,7 +401,9 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
                             'set fcc [mdff ccc $selall -i 4ake-target_autopsf.dx -res {}]'.format(resolution),
                             'lappend cc $lcc $fcc',
                             'set outfile [open $outfilename w]',
-                            'puts $outfile "$cc"']
+                            'puts $outfile "$cc"',
+                            'close $outfile']
+
 
     task8.copy_input_data = [
         '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
