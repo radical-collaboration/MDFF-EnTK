@@ -4,13 +4,37 @@ rabbitmq:
   port: 5672
 
 # HPC ---------------------------------------------
+xsede_bridges2:
+  label: 'xsede.bridges2'
+  walltime: 60
+  cpus: 128
+  gpus: 0
+  queue: 'RM'
+  access_schema: 'gsissh'
+  cpus_per_node: 128
+  gpus_per_node: 0        
+
+xsede_bridges2_cuda:
+  label: 'xsede.bridges2'
+  walltime: 60
+  cpus: 256
+  gpus: 16
+  queue: 'GPU'
+  access_schema: 'gsissh'
+  cpus_per_node: 128
+  gpus_per_node: 8       
+
+
+
 xsede_bridges:
   label: 'xsede.bridges'
-  walltime: 30
+  walltime: 60
   cpus: 56
   gpus: 0
   queue: 'RM'
-  access_schema: 'ssh'
+  access_schema: 'gsissh'
+  cpus_per_node: 28
+  gpus_per_node: 0        
 
 xsede_supermic:
   label: 'xsede.supermic'

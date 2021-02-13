@@ -1,12 +1,49 @@
 global:
   workflow_name: "simple-mdff-vds"
-  ensemble_size: 100
+  ensemble_size: 1
   sim_duration: 1
-  total_iters: 20
+  total_iters: 1
   resolution: 1.8
-  gscale: 0.3 
+  gscale: 0.3
   minsteps: 500
   numsteps: 10000
+
+xsede_bridges2:
+  simulation:
+    pre_exec:
+        - 'module load namd/2.14-cpu'
+    cpus: 28
+  
+  analysis:
+    pre_exec:
+        - "export PATH=/opt/packages/vmd-1.9.3/bin:$PATH"
+        - "export LD_LIBRARY_PATH=/opt/packages/vmd-1.9.3/lib:$LD_LIBRARY_PATH"
+    cpus: 1
+
+  shared_data:
+    - 'pdb/4ake-target.pdb'
+    - 'pdb/1ake-docked-noh.pdb'
+    - 'pdb/target-density-5A.dx'
+
+
+xsede_bridges2_cuda:
+  simulation:
+    pre_exec:
+        - 'module load namd/2.13-gpu'
+    cpus: 28
+  
+  analysis:
+    pre_exec:
+        - "export PATH=/opt/packages/vmd-1.9.3/bin:$PATH"
+        - "export LD_LIBRARY_PATH=/opt/packages/vmd-1.9.3/lib:$LD_LIBRARY_PATH"
+    cpus: 1
+
+  shared_data:
+    - 'pdb/4ake-target.pdb'
+    - 'pdb/1ake-docked-noh.pdb'
+    - 'pdb/target-density-5A.dx'
+
+
 
 xsede_bridges:
   simulation:
@@ -18,6 +55,12 @@ xsede_bridges:
     pre_exec:
         - 'module load vmd/1.9.2'
     cpus: 1
+
+  shared_data:
+    - 'pdb/4ake-target.pdb'
+    - 'pdb/1ake-docked-noh.pdb'
+    - 'pdb/target-density-5A.dx'
+
 
 ornl_summit:
   simulation:
