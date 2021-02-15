@@ -84,10 +84,10 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
         sim_thread_cnt = summit_hw_thread_cnt
         sim_process_cnt = int(sim_cpus) // summit_hw_thread_cnt
     else:
-        ana_thread_cnt = ana_cpus
-        ana_process_cnt = 1
-        sim_thread_cnt = int(sim_cpus)
-        sim_process_cnt = 1
+        ana_thread_cnt = 2
+        ana_process_cnt = int(ana_cpus) // 2
+        sim_thread_cnt = 2 
+        sim_process_cnt = int(sim_cpus) // 2
 
     first_stage = Stage()
     # We use names of pipelines, stages, tasks to refer to data of a
@@ -242,8 +242,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'process_type': 'MPI',
             'thread_type': 'OpenMP'}
     task6.pre_exec = sim_pre_exec.copy()
-    task6.executable = namd_path
-    task6.arguments = ['+ppn', sim_thread_cnt, 'adk-step1.namd']
+    task6.executable = "{} {} {}".format('--use-hwthread-cpus', '--oversubscribe', namd_path)
+    task6.arguments = ['+setcpuaffinity', '+ppn', sim_thread_cnt, 'adk-step1.namd']
     if resource[-4:] == "cuda":
         gpus_per_ensemble = resource_cfg[resource]["gpus_per_node"] * \
                 resource_cfg[resource]["nodes"] // int(workflow_cfg['global']['ensemble_size'])

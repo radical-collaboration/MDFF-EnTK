@@ -12,18 +12,21 @@ xsede_bridges2:
   simulation:
     pre_exec:
         - 'module load namd/2.14-cpu'
-    cpus: 28
+    cpus: 128
   
   analysis:
     pre_exec:
         - "export PATH=/opt/packages/vmd-1.9.3/bin:$PATH"
         - "export LD_LIBRARY_PATH=/opt/packages/vmd-1.9.3/lib:$LD_LIBRARY_PATH"
-    cpus: 1
+    cpus: 2
 
   shared_data:
     - 'pdb/4ake-target.pdb'
     - 'pdb/1ake-docked-noh.pdb'
     - 'pdb/target-density-5A.dx'
+
+  path:
+    namd: '/opt/packages/namd/namd-2.14/RM/namd2'
 
 
 xsede_bridges2_cuda:
@@ -36,13 +39,15 @@ xsede_bridges2_cuda:
     pre_exec:
         - "export PATH=/opt/packages/vmd-1.9.3/bin:$PATH"
         - "export LD_LIBRARY_PATH=/opt/packages/vmd-1.9.3/lib:$LD_LIBRARY_PATH"
-    cpus: 1
+    cpus: 2
 
   shared_data:
     - 'pdb/4ake-target.pdb'
     - 'pdb/1ake-docked-noh.pdb'
     - 'pdb/target-density-5A.dx'
 
+  path:
+    namd: '/opt/packages/namd/namd-2.14/RM/namd2'
 
 
 xsede_bridges:
