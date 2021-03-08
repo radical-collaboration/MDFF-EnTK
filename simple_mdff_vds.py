@@ -48,7 +48,7 @@ def get_pipelines(workflow_cfg, resource, resource_cfg):
     pipes = []
     for rep_idx in range(ensemble_size):
         p = Pipeline()
-        p.name = 'simple-mdff-replica-%s' % rep_idx
+        p.name = 'simple mdff replica %s' % rep_idx
 
         for iter_idx in range(total_iters):
             one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg) # update pipeline, p 
@@ -354,7 +354,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
 
 
     eight_stage = Stage()
-    eight_stage.name = 'Calculating the cross-correlation coefficient'
+    eight_stage.name = 'Calculating the cross correlation coefficient'
     task8 = Task()
     task8.name = "task8"
     task8.pre_exec = ana_pre_exec.copy()
