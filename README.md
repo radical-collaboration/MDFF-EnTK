@@ -1,6 +1,10 @@
 
 # NAMD-EnTK
 
+## Experiment
+
+https://github.com/radical-experiments/MDFF-EnTK
+
 ## Run
 
 ### Python virtualenv activation
