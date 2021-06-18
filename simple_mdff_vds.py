@@ -135,7 +135,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'thread_type': None}
     task2_tcl_cmds = [ 'package require mdff' ]
     task2_tcl_cmds += [ 'mdff griddx -i {} -o {}'.format(task1_output[0], task2_output[0]) ]
-    task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name, task1.name, task1_output[0])]
+    task2.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid,
+        first_stage.uid, task1.uid, task1_output[0])]
     #task2.link_input_data = [ ("$SHARED/%s" % os.path.basename(x)) for x in \
     #        workflow_cfg[resource]['shared_data'] ]
 
@@ -190,8 +191,8 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task4_tcl_cmds += ['package require chirality']
     task4_tcl_cmds += ['cispeptide restrain -o {}'.format(task4_output[1])]
     task4_tcl_cmds += ['chirality restrain -o {}'.format(task4_output[2])]   
-    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.psf')]
+    task4.copy_input_data = ['$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-docked-noh_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-docked-noh_autopsf.psf')]
 
     set_vmd_run(task4, task4_tcl_cmds, "fourth_stage.tcl")
     fourth_stage.add_tasks(task4)
@@ -219,13 +220,14 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             + '-extrab {1ake-extrabonds.txt 1ake-extrabonds-cispeptide.txt 1ake-extrabonds-chirality.txt} ' \
             + f'-gscale {gscale} -minsteps {minsteps} -numsteps {numsteps}' ]
     
-    task5.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, second_stage.name, task2.name, '4ake-target_autopsf-grid.dx'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.pdb'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf.psf'),
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name, task3.name, '1ake-docked-noh_autopsf-grid.pdb')]
+    task5.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, second_stage.uid, task2.uid, '4ake-target_autopsf-grid.dx'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-docked-noh_autopsf.pdb'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-docked-noh_autopsf.psf'),
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid, task3.uid, '1ake-docked-noh_autopsf-grid.pdb')]
     for filename in task4_output:
         task5.copy_input_data += [
-            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fourth_stage.name, task4.name, filename)]
+            '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fourth_stage.uid,
+                task4.uid, filename)]
 
     set_vmd_run(task5, task5_tcl_cmds, "fifth_stage.tcl")
     fifth_stage.add_tasks(task5)
@@ -261,6 +263,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
                 f" -c{cpus_per_ensemble}"
         cmd_namd = namd_path
         task6.executable = "%s; %s %s" % (cmd_cat, cmd_jsrun, cmd_namd)
+        task6.executable = cmd_namd
         task6.arguments = ['+ignoresharing', '+ppn', cpus_per_ensemble, 'adk-step1.namd']
         
         task6.cpu_reqs = {
@@ -271,25 +274,27 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             }
         task6.gpu_reqs = {
                 "processes": 1,
-                "process_type": None,
+                "process_type": 'MPI',
                 "threads_per_process": 1,
                 "thread_type": "CUDA",
-            }
+            
+                }
 
     
-    task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'adk-step1.namd'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-docked-noh_autopsf.psf'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-docked-noh_autopsf.pdb'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-docked-noh_autopsf-grid.pdb'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '4ake-target_autopsf-grid.dx'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-extrabonds-chirality.txt'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-extrabonds-cispeptide.txt'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, '1ake-extrabonds.txt'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name,task5.name, 'mdff_template.namd'),
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, fifth_stage.name, task5.name, 'par_all36_prot.prm')]
+    task6.copy_input_data = [ '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, 'adk-step1.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-docked-noh_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-docked-noh_autopsf.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-docked-noh_autopsf-grid.pdb'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '4ake-target_autopsf-grid.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-extrabonds-chirality.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-extrabonds-cispeptide.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, '1ake-extrabonds.txt'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid,task5.uid, 'mdff_template.namd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, fifth_stage.uid, task5.uid, 'par_all36_prot.prm')]
 
     if iter_idx != 0:
-        task6.pre_exec += ['export fpath=`grep -v "a" $RP_PILOT_STAGING/*_{}_cc.dat|sort -k2 -n -r|head -n1|cut -d":" -f1`'.format(iter_idx-1),
+        task6.pre_exec += ['echo 0 > $RP_PILOT_STAGING/base_{}_cc.dat'.format(iter_idx - 1),
+                'export fpath=`grep -v "a" $RP_PILOT_STAGING/*_{}_cc.dat|sort -k2 -n -r|head -n1|cut -d":" -f1`'.format(iter_idx-1),
               'export fname=`basename $fpath`', 
               'echo $fname',
               'echo $fpath',
@@ -334,14 +339,14 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task7_tcl_cmds += ['animate write pdb last.pdb beg $frame_indx end $frame_indx waitfor all']
 
     task7.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
-            task1.name, '4ake-target_autopsf.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid,
+            task1.uid, '4ake-target_autopsf.dx'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-docked-noh_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid,
+            task3.uid, '1ake-docked-noh_autopsf.psf'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.dcd')
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid,
+            task6.uid, 'adk-step1.dcd')
         ]
     #task7.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
@@ -406,26 +411,26 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
 
 
     task8.copy_input_data = [
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, first_stage.name,
-            task1.name, '4ake-target_autopsf.dx'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, first_stage.uid,
+            task1.uid, '4ake-target_autopsf.dx'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, third_stage.name,
-            task3.name, '1ake-docked-noh_autopsf.psf'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, third_stage.uid,
+            task3.uid, '1ake-docked-noh_autopsf.psf'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.dcd'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid,
+            task6.uid, 'adk-step1.dcd'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.restart.coor'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid,
+            task6.uid, 'adk-step1.restart.coor'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.restart.vel'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid,
+            task6.uid, 'adk-step1.restart.vel'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, sixth_stage.name,
-            task6.name, 'adk-step1.restart.xsc'),
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, sixth_stage.uid,
+            task6.uid, 'adk-step1.restart.xsc'),
 
-        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.name, seventh_stage.name,
-            task7.name, 'last.pdb')
+        '$Pipeline_{}_Stage_{}_Task_{}/{}'.format(p.uid, seventh_stage.uid,
+            task7.uid, 'last.pdb')
         ]
     #task8.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
     #        workflow_cfg[resource]['shared_data'] ]
@@ -495,6 +500,9 @@ if __name__ == '__main__':
         'cpus': max(resource_cfg[resource].get('cpus', 1),
             resource_cfg[resource].get('nodes', 1) *
             resource_cfg[resource]['cpus_per_node']),
+        'gpus': max(resource_cfg[resource].get('gpus', 1),
+            resource_cfg[resource].get('nodes', 1) *
+            resource_cfg[resource]['gpus_per_node']),
         'access_schema': resource_cfg[resource]['access_schema']
         }
     if 'queue' in resource_cfg[resource]:
