@@ -1,12 +1,12 @@
 global:
   workflow_name: "simple-mdff-vds"
-  ensemble_size: 32
+  ensemble_size: 100
   sim_duration: 1
   total_iters: 16
   resolution: 1.8
   gscale: 0.3
-  minsteps: 500
-  numsteps: 32000
+  minsteps: 1000
+  numsteps: 80000
 
 xsede_bridges2:
   simulation:
@@ -143,6 +143,31 @@ ornl_summit_cuda:
   path:
     namd: '/gpfs/alpine/world-shared/bip115/NAMD_binaries/summit/NAMD_LATEST_Linux-POWER-pami-smp-Summit-CUDA/namd2'
     vmd: '/gpfs/alpine/world-shared/bip115/VMD_binaries/VMD-1.9.3-xlc-build-2019-Dec-12/bin/vmd'
+
+ornl_summit_cuda_codh:
+  simulation:
+    pre_exec:
+        - 'module unload prrte'
+        - 'module load cuda'
+        - 'module load spectrum-mpi'
+        - 'module load fftw/3.3.8'
+        - 'export LD_LIBRARY_PATH=/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-5/spectrum-mpi-10.3.1.2-20200121-p6nrnt6vtvkn356wqg6f74n6jspnpjd2/lib/pami_port:$LD_LIBRARY_PATH'
+        - 'export LD_PRELOAD=/opt/ibm/spectrum_mpi/lib/libpami_cudahook.so:$LD_PRELOAD'
+        - 'unset CUDA_VISIBLE_DEVICES'
+    cpus: 167
+  
+  analysis:
+    pre_exec:
+    cpus: 4
+
+  shared_data:
+    - 'pdb/CODH/open.pdb'
+    - 'pdb/CODH/closed.pdb'
+
+  path:
+    namd: '/gpfs/alpine/world-shared/bip115/NAMD_binaries/summit/NAMD_LATEST_Linux-POWER-pami-smp-Summit-CUDA/namd2'
+    vmd: '/gpfs/alpine/world-shared/bip115/VMD_binaries/VMD-1.9.3-xlc-build-2019-Dec-12/bin/vmd'
+
 
 ornl_summit_debug_cuda:
   simulation:

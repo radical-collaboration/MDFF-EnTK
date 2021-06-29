@@ -113,8 +113,7 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task1_tcl_cmds += [ 'mdff sim $sel -res {} -o {}'.format(resolution, task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
-    molecule = 'CODH'
-    task1.link_input_data = [ "$SHARED/%s/%s" % (molecule, os.path.basename(x) for x in
+    task1.link_input_data = [ "$SHARED/%s" % (os.path.basename(x) for x in
             workflow_cfg[resource]['shared_data'])]
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
