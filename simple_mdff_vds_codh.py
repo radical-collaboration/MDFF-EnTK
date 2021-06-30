@@ -113,8 +113,9 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
     task1_tcl_cmds += [ 'mdff sim $sel -res {} -o {}'.format(resolution, task1_output[0]) ]
 
     set_vmd_run(task1, task1_tcl_cmds, "first_stage.tcl")
-    task1.link_input_data = [ "$SHARED/%s" % (os.path.basename(x) for x in
-            workflow_cfg[resource]['shared_data'])]
+    task1.link_input_data = [ "$SHARED/%s" % os.path.basename(x) for x in
+            workflow_cfg[resource]['shared_data']]
+
     first_stage.add_tasks(task1)
     # Add sim_stage to Pipeline
     p.add_stages(first_stage)
@@ -243,9 +244,9 @@ def one_cycle(p, workflow_cfg, resource, rep_idx, iter_idx, resource_cfg):
             'process_type': 'MPI',
             'thread_type': 'OpenMP'}
     task6.pre_exec = sim_pre_exec.copy()
-    task6.executable = "{} {} {}".format('--use-hwthread-cpus', '--oversubscribe', namd_path)
+    task6.executable = "{} {} {}".format('--use-hwthread-cpus', '--oversubscribe', namd_path) # for mpirun
     task6.arguments = ['+setcpuaffinity', '+ppn', sim_thread_cnt, 'codh-step1.namd']
-    if resource[-4:] == "cuda":
+    if "cuda" in resource:
         gpus_per_ensemble = resource_cfg[resource]["gpus_per_node"] * \
                 resource_cfg[resource]["nodes"] // int(workflow_cfg['global']['ensemble_size'])
 
