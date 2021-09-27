@@ -1,5 +1,5 @@
 
-# NAMD-EnTK
+# MDFF-EnTK
 
 ## Experiment
 
