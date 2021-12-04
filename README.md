@@ -1,7 +1,8 @@
 
-# MDFF-EnTK
+# MDFF-EnTK Workflow Application
 
-## Experiment
+
+## Experimental data
 
 https://github.com/radical-experiments/MDFF-EnTK
 
@@ -22,8 +23,14 @@ Conda works fine, if preferred. e.g. `conda activate simple_mdff`
 The special script for Summit loads configuration files and start a workflow described by:
 
 ```
- python simple_mdff.summit.py
+ python simple_mdff_vds.py --resource ornl_summit_cuda
 ```
+
+For CODH:
+```
+ python simple_mdff_vds_codh.py --resource ornl_summit_cuda
+```
+
 
 The example output message on the screen is like:
 
@@ -55,10 +62,10 @@ It shows that one pilot job (here it is a EnTK workflow) is submitted to `ornl.s
 We also have tested XSEDE Bridges with the following script. Run it like:
 
 ```
- python simple_mdff.py --resource xsede_bridges
+ python simple_mdff_vds.py --resource xsede_bridges
 ```
 
-## OUTPUT/RESULTS
+## Task STDOUT files and intermediate arbitrary files
 
 If you remember your session id of your last run e.g. `re.session.login4.hrlee.018391.0000`, you will find raw output/results here on Summit:
 ```
@@ -88,8 +95,8 @@ Necessary modules are loaded first before to use python and pip for installation
 ### Modules on Summit
 
 ```
-module load python/3.7.0-anaconda3-5.3.0
-module load py-virtualenv/16.0.0
+. /sw/summit/python/3.7/anaconda3/5.3.0/etc/profile.d/conda.sh
+conda activate /gpfs/alpine/world-shared/chm155/hrlee/conda/openmm
 ```
 
 ### Modules on Bridges
