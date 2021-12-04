@@ -158,8 +158,8 @@ mongodb:
 The raw results of the experiments are stored on the following directory, `experiments` per HPC system.
 Find the [README](experiments/README.md) for the details of :
 
-- [Results on Summit](experiments#summit)
-- [Results on Bridges](experiments#bridges)
+- [Results on Summit](https://github.com/radical-experiments/MDFF-EnTK/tree/main/experiments#summit)
+- [Results on Bridges](https://github.com/radical-experiments/MDFF-EnTK/tree/main/experiments#bridges)
 
 ## FAQ
 
