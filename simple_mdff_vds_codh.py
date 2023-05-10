@@ -480,11 +480,13 @@ if __name__ == '__main__':
         os.environ['RADICAL_PILOT_DBURL'] = resource_cfg['mongodb']['url']
 
     # Create Application Manager
-    appman = AppManager(hostname=os.environ.get('RMQ_HOSTNAME',
+    appman = AppManager()
+    '''hostname=os.environ.get('RMQ_HOSTNAME',
         resource_cfg['rabbitmq']['hostname']), 
         port=os.environ.get('RMQ_PORT', resource_cfg['rabbitmq']['port']),
         username=os.environ.get('RMQ_USERNAME',None),
         password=os.environ.get('RMQ_PASSWORD',None))
+    '''
 
     # override the number of nodes to start from user input parameter
     if args.nodes and int(args.nodes) > 0:
