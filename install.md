@@ -51,9 +51,13 @@ pip install -r requirements.txt
 
 ### MongoDB Installation
 
-MongoDB is required to store workflow status for radical.entk and the commands below will require system administration (root priviledge) 
+MongoDB is required to store workflow status for radical.entk and the commands below will require system administration (root priviledge) :
+
 ```
 sudo apt-get update
+sudo apt-get install gnupg
+curl -fsSL https://pgp.mongodb.com/server-6.0.asc |    sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg    --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 sudo apt-get install -y mongodb-org
 sudo systemctl start mongod
 mongosh default --eval "db.createUser({user: 'guest', pwd: 'guest', \
