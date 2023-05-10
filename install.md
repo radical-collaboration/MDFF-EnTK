@@ -75,7 +75,6 @@ Once you have mongodb service running and r-mdff ready to use, you need to defin
 
 ```
 export RADICAL_PILOT_DBURL=mongodb://guest:guest@localhost:27017/default
-``` 
 ```
 
 ## Run R-MDFF Example
