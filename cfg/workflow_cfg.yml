@@ -8,6 +8,26 @@ global:
   minsteps: 1000
   numsteps: 80000
 
+localhost:
+  simulation:
+    pre_exec:
+    cpus: 4
+  
+  analysis:
+    pre_exec:
+    cpus: 4
+
+  shared_data:
+    - 'pdb/ADK/4ake-target.pdb'
+    - 'pdb/ADK/1ake-docked-noh.pdb'
+    - 'pdb/CODH/open.pdb'
+    - 'pdb/CODH/closed.pdb'
+
+  path:
+    namd: './namd/bin/namd2'
+    vmd: './vmd/bin/vmd'
+
+
 xsede_bridges2:
   simulation:
     pre_exec:
