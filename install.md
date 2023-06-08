@@ -9,6 +9,8 @@ This page provides an easy way of installing R-MDFF on Linux machines.
 - radical.entk
 - Conda package management tool or virtualenv
 - MongoDB
+- NAMD (https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=NAMD)
+- VMD (https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD)
 
 ## (Optional) Python 3 via Conda
 
