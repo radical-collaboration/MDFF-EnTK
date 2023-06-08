@@ -1,6 +1,6 @@
 # R-MDFF Installation
 
-This page provides an easy way of installing R-MDFF on Linux machines.
+This page provides an easy way of installing R-MDFF on Linux workstaions or HPC resource.
 
 ## Prerequisites
 
