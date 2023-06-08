@@ -1,10 +1,11 @@
 
-# MDFF-EnTK Workflow Application
+# R-MDFF Workflow Application
 
 
-## Experimental data
+## R-MDFF installation guide:
 
-https://github.com/radical-experiments/MDFF-EnTK
+https://github.com/radical-collaboration/MDFF-EnTK/blob/master/install.md
+
 
 ## Run
 
